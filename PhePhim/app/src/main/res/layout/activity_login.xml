@@ -32,7 +32,8 @@
             android:inputType="textPersonName"
             android:textColor="@android:color/white"
             android:textColorHint="@android:color/white"
-            android:textColorLink="@android:color/white" />
+            android:textColorLink="@android:color/white"
+            android:backgroundTint="@color/colorBtnRegister"/>
 
         <EditText
             android:id="@+id/editText2"
@@ -43,8 +44,10 @@
             android:inputType="textPersonName"
             android:textColor="@android:color/white"
             android:textColorHint="@android:color/white"
-            android:textColorLink="@android:color/white" />
+            android:textColorLink="@android:color/white"
+            android:backgroundTint="@color/colorBtnRegister"/>
     </LinearLayout>
+
     <Button
         android:id="@+id/btnRegister"
         android:layout_width="300dp"
