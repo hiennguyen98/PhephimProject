@@ -18,7 +18,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical" >
+            android:orientation="vertical"
+            android:focusableInTouchMode="true">
 
             <ImageView
                 android:id="@+id/imgBannerPhimDetail"
@@ -57,6 +58,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="5dp"
+                            android:justificationMode="inter_word"
                             android:text="Spider-Man: Into The Spider-Verse"
                             android:textColor="@android:color/white"
                             android:textSize="24sp"
@@ -248,6 +250,7 @@
                 android:id="@+id/txtNoiDungPhimDetail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:justificationMode="inter_word"
                 android:layout_marginLeft="15dp"
                 android:layout_marginTop="5dp"
                 android:layout_marginRight="15dp"

@@ -1,35 +1,46 @@
 package com.example.model;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 import java.io.Serializable;
 
 public class BaiViet implements Serializable {
-    String ma;
-    String tieuDe;
-    String noiDung;
-    String ngayDang;
-    int diemDanhGia;
-    String tenTheLoai;
-    String tacGia;
 
-    public BaiViet(String ma, String tieuDe, String noiDung, String ngayDang, int diemDanhGia, String tenTheLoai, String tacGia) {
-        this.ma = ma;
-        this.tieuDe = tieuDe;
-        this.noiDung = noiDung;
-        this.ngayDang = ngayDang;
-        this.diemDanhGia = diemDanhGia;
-        this.tenTheLoai = tenTheLoai;
-        this.tacGia = tacGia;
+    @SerializedName("Id")
+    @Expose
+    private String id;
+    @SerializedName("TieuDe")
+    @Expose
+    private String tieuDe;
+    @SerializedName("NoiDung")
+    @Expose
+    private String noiDung;
+    @SerializedName("Ngay")
+    @Expose
+    private String ngay;
+    @SerializedName("Diem")
+    @Expose
+    private int diem;
+    @SerializedName("Anh")
+    @Expose
+    private String anh;
+    @SerializedName("TacGia")
+    @Expose
+    private String tacGia;
+    @SerializedName("Avatar")
+    @Expose
+    private String avatar;
+    @SerializedName("TheLoai")
+    @Expose
+    private String theLoai;
+
+    public String getId() {
+        return id;
     }
 
-    public BaiViet() {
-    }
-
-    public String getMa() {
-        return ma;
-    }
-
-    public void setMa(String ma) {
-        this.ma = ma;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getTieuDe() {
@@ -48,28 +59,28 @@ public class BaiViet implements Serializable {
         this.noiDung = noiDung;
     }
 
-    public String getNgayDang() {
-        return ngayDang;
+    public String getNgay() {
+        return ngay;
     }
 
-    public void setNgayDang(String ngayDang) {
-        this.ngayDang = ngayDang;
+    public void setNgay(String ngay) {
+        this.ngay = ngay;
     }
 
-    public int getDiemDanhGia() {
-        return diemDanhGia;
+    public int getDiem() {
+        return diem;
     }
 
-    public void setDiemDanhGia(int diemDanhGia) {
-        this.diemDanhGia = diemDanhGia;
+    public void setDiem(int diem) {
+        this.diem = diem;
     }
 
-    public String getTenTheLoai() {
-        return tenTheLoai;
+    public String getAnh() {
+        return anh;
     }
 
-    public void setTenTheLoai(String tenTheLoai) {
-        this.tenTheLoai = tenTheLoai;
+    public void setAnh(String anh) {
+        this.anh = anh;
     }
 
     public String getTacGia() {
@@ -79,4 +90,21 @@ public class BaiViet implements Serializable {
     public void setTacGia(String tacGia) {
         this.tacGia = tacGia;
     }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
+
+    public String getTheLoai() {
+        return theLoai;
+    }
+
+    public void setTheLoai(String theLoai) {
+        this.theLoai = theLoai;
+    }
+
 }

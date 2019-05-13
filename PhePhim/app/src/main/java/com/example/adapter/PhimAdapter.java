@@ -11,6 +11,8 @@ import android.widget.TextView;
 
 import com.example.model.Phim;
 import com.example.phephim.R;
+import com.example.service.APIUtils;
+import com.squareup.picasso.Picasso;
 
 public class PhimAdapter extends ArrayAdapter<Phim> {
     Activity context;
@@ -33,9 +35,13 @@ public class PhimAdapter extends ArrayAdapter<Phim> {
 
         Phim phim = getItem(position);
 
-        txtDiem.setText(phim.getDiemDanhGia()+"");
-        imgPoster.setImageResource(R.drawable.spider_verse);
-        progressBar.setProgress((int) (phim.getDiemDanhGia() * 10));
+        txtDiem.setText(phim.getDiem()+"");
+        Picasso.get()
+                .load(phim.getPoster())
+                .placeholder(android.R.drawable.ic_menu_report_image)
+                .error(android.R.drawable.ic_menu_report_image)
+                .into(imgPoster);
+        progressBar.setProgress((int) (phim.getDiem() * 10));
 
         return mView;
     }

@@ -1,39 +1,52 @@
 package com.example.model;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 import java.io.Serializable;
 
 public class Phim implements Serializable {
-    String ma;
-    String ten;
-    String daoDien;
-    String dienVien;
-    String thoiLuong;
-    String ngayKhoiChieu;
-    float diemDanhGia;
-    String poster;
-    String theLoai;
 
-    public Phim(String ma, String ten, String daoDien, String dienVien, String thoiLuong, String ngayKhoiChieu, float diemDanhGia, String poster, String theLoai) {
-        this.ma = ma;
-        this.ten = ten;
-        this.daoDien = daoDien;
-        this.dienVien = dienVien;
-        this.thoiLuong = thoiLuong;
-        this.ngayKhoiChieu = ngayKhoiChieu;
-        this.diemDanhGia = diemDanhGia;
-        this.poster = poster;
-        this.theLoai = theLoai;
+    @SerializedName("Id")
+    @Expose
+    private String id;
+    @SerializedName("Ten")
+    @Expose
+    private String ten;
+    @SerializedName("DaoDien")
+    @Expose
+    private String daoDien;
+    @SerializedName("DienVien")
+    @Expose
+    private String dienVien;
+    @SerializedName("ThoiLuong")
+    @Expose
+    private String thoiLuong;
+    @SerializedName("Ngay")
+    @Expose
+    private String ngay;
+    @SerializedName("Diem")
+    @Expose
+    private float diem;
+    @SerializedName("Poster")
+    @Expose
+    private String poster;
+    @SerializedName("TheLoai")
+    @Expose
+    private String theLoai;
+    @SerializedName("MoTa")
+    @Expose
+    private String moTa;
+    @SerializedName("Banner")
+    @Expose
+    private String banner;
+
+    public String getId() {
+        return id;
     }
 
-    public Phim() {
-    }
-
-    public String getMa() {
-        return ma;
-    }
-
-    public void setMa(String ma) {
-        this.ma = ma;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getTen() {
@@ -68,20 +81,20 @@ public class Phim implements Serializable {
         this.thoiLuong = thoiLuong;
     }
 
-    public String getNgayKhoiChieu() {
-        return ngayKhoiChieu;
+    public String getNgay() {
+        return ngay;
     }
 
-    public void setNgayKhoiChieu(String ngayKhoiChieu) {
-        this.ngayKhoiChieu = ngayKhoiChieu;
+    public void setNgay(String ngay) {
+        this.ngay = ngay;
     }
 
-    public float getDiemDanhGia() {
-        return (float) Math.round(diemDanhGia*10)/10 ;
+    public float getDiem() {
+        return diem;
     }
 
-    public void setDiemDanhGia(float diemDanhGia) {
-        this.diemDanhGia = diemDanhGia;
+    public void setDiem(float diem) {
+        this.diem = diem;
     }
 
     public String getPoster() {
@@ -99,4 +112,21 @@ public class Phim implements Serializable {
     public void setTheLoai(String theLoai) {
         this.theLoai = theLoai;
     }
+
+    public String getMoTa() {
+        return moTa;
+    }
+
+    public void setMoTa(String moTa) {
+        this.moTa = moTa;
+    }
+
+    public String getBanner() {
+        return banner;
+    }
+
+    public void setBanner(String banner) {
+        this.banner = banner;
+    }
+
 }

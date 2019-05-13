@@ -37,6 +37,7 @@
             android:textSize="30sp" />
 
         <EditText
+            android:id="@+id/edtSearchPhim"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:backgroundTint="@color/colorTextColor"
@@ -60,7 +61,7 @@
             <Spinner
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                tools:listitem="@android:layout/simple_list_item_1" ></Spinner>
+                tools:listitem="@android:layout/simple_list_item_1" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -71,9 +72,23 @@
             <Spinner
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                tools:listitem="@android:layout/simple_list_item_1"></Spinner>
+                tools:listitem="@android:layout/simple_list_item_1"/>
 
         </LinearLayout>
+
+        <GridView
+            android:id="@+id/gvPhim"
+            android:layout_marginTop="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:numColumns="3"/>
+
+        <TextView
+            android:id="@+id/txtNotFoundPhim"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorTextColor"
+            android:gravity="center"/>
 
     </LinearLayout>
 

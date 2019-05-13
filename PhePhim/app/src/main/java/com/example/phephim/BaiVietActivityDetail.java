@@ -1,13 +1,18 @@
 package com.example.phephim;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.example.adapter.BinhLuanBaiVietAdapter;
+import com.example.model.BaiViet;
 import com.example.model.BinhLuanBaiViet;
 import com.example.util.MyListView;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,19 +22,21 @@ public class BaiVietActivityDetail extends AppCompatActivity {
     Spinner spinnerSapXep;
     MyListView lvBinhLuan;
     BinhLuanBaiVietAdapter adapter;
+    TextView txtTieuDe, txtTacGia, txtNgay, txtNoiDung, txtDiem, txtSoBinhLuan;
+    ImageView imgTacGia, imgAnh;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bai_viet_detail);
 
-        EditSpinner();
         addControl();
-        addData();
-
+        setData();
+        setupSpinner();
+        addBinhLuan();
     }
 
-    private void addData() {
+    private void addBinhLuan() {
         adapter.add(new BinhLuanBaiViet("Ronaldo", "21/12/2019",
                 "Nếu chỉ tính trong phạm vi các bộ phim SAH thì mình yêu thích khá nhiều nhân vật phản diện như Joker, Doctor Octopus, Magneto, General Zod .... nhưng nhân vật mà để mình đồng cảm nhất thì có lẽ là General Zod. Xét cho cùng thì khi rơi vào hoàn cảnh của những phản diện khác  thì bản thân mình vẫn có thể hành động khác do mục tiêu của các phản diện khác thường nằm một trong hai lý do sau: 1 - hoàn thành tâm nguyện của 1 ai đó/ của bản thân một cách cực đoan; 2 - trả thù một người/ một nhóm người/ cả xã hội, thứ đã biến hắn thành kẻ ác như vậy. Với các mục đích như vậy, đôi khi con người ta có thể lựa chọn tha thứ hoặc từ bỏ, tức là với cùng một hoàn cảnh đó xảy ra với mười người thì không chắc rằng cả 10 người đó đều sẽ trở thành kẻ xấu. \n" +
                         "Nhưng với General Zod thì khác, hắn đôi khi không còn lựa chọn. Đương nhiên cách xử lý của hắn khá tàn bạo và cực đoan nhưng nên nhớ hắn là một tướng quân trong quân đội, còn con người thì không phải cùng chủng loại đối với hắn.  Như hắn ta đã nói : \"ta tồn tại chỉ để bảo vệ krypton, ta sinh ra đã được định sẵn mục đích như vậy. Mọi hành động ta làm, dù có tàn bạo thế nào, dù có độc ác ra sao thì đều vì mục đích tốt hơn cho chủng tộc của ta\". Thật vậy, nhìn lại cuộc đời của hắn, hắn sinh ra mà không được lựa chọn mình là ai, tương lai mình sẽ làm gì, hắn sinh ra với một sứ mệnh được định sẵn: bảo vệ Krypton. Nhưng trớ trêu thay, những lãnh đạo của dân tộc hắn bỏ ngoài tai những lời cảnh báo của các nhà khoa học về tác hại của việc khai thác lõi Krypton sẽ khiến cho hành tinh bị nổ tung => Để cứu dân tộc mình, cách duy nhất hắn có thể làm là đảo chính. Hắn cũng chưa từng muốn giết Jor-el cho đến khi ông trộm cổ bản - cơ sở để xây dựng lại Krypton đi mất (ngoài ra còn vì lý do dị giáo). Khi Krypton bị hủy diệt, dân tộc hắn chỉ còn những người bị lưu đày giống hắn + superman => hắn phải đi tìm cổ bản để tái thiết Krypton. \n" +
@@ -48,9 +55,44 @@ public class BaiVietActivityDetail extends AppCompatActivity {
         lvBinhLuan = findViewById(R.id.lvBinhLuanBV);
         adapter = new BinhLuanBaiVietAdapter(BaiVietActivityDetail.this, R.layout.binh_luan_bai_viet_item);
         lvBinhLuan.setAdapter(adapter);
+
+        txtTieuDe = findViewById(R.id.txtTieuDeBVDetail);
+        txtTacGia = findViewById(R.id.txtTacGiaBV);
+        txtNgay = findViewById(R.id.txtNgayDangBV);
+        txtNoiDung = findViewById(R.id.txtNoiDungBV);
+        txtDiem = findViewById(R.id.txtDiemBaiVietDetail);
+        txtSoBinhLuan = findViewById(R.id.txtSoBLBV);
+
+        imgTacGia = findViewById(R.id.imgTacGiaBV);
+        imgAnh = findViewById(R.id.imgAnhBV);
     }
 
-    private void EditSpinner() {
+    private void setData() {
+        Intent intent = getIntent();
+        BaiViet baiViet = (BaiViet) intent.getSerializableExtra("BaiViet");
+
+        txtTieuDe.setText(baiViet.getTieuDe());
+        txtTacGia.setText(baiViet.getTacGia());
+        txtNgay.setText(baiViet.getNgay());
+        txtNoiDung.setText(baiViet.getNoiDung());
+        txtDiem.setText(baiViet.getDiem() + "");
+        txtSoBinhLuan.setText("3 Bình luận");
+
+        Picasso.get()
+                .load(baiViet.getAvatar())
+                .placeholder(android.R.drawable.ic_menu_report_image)
+                .error(android.R.drawable.ic_menu_report_image)
+                .into(imgTacGia);
+        if(baiViet.getAnh() != null) {
+            Picasso.get()
+                    .load(baiViet.getAnh())
+                    .placeholder(android.R.drawable.ic_menu_report_image)
+                    .error(android.R.drawable.ic_menu_report_image)
+                    .into(imgAnh);
+        }
+    }
+
+    private void setupSpinner() {
         spinnerSapXep = findViewById(R.id.spinnerBLBV);
 
         List<String> list = new ArrayList<>();

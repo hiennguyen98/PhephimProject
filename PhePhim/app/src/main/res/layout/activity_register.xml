@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/colorBackgroundRegister"
     android:orientation="vertical"
-    tools:context=".registerActivity">
+    tools:context=".RegisterActivity">
 
     <ImageView
         android:id="@+id/imageView"
@@ -24,7 +24,9 @@
         android:orientation="vertical">
 
         <EditText
-            android:id="@+id/edtEmail"
+            android:id="@+id/edtEmailREG"
+            android:drawableLeft="@drawable/icon_mail"
+            android:drawablePadding="10dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
@@ -37,10 +39,12 @@
             android:backgroundTint="@color/colorBtnRegister"/>
 
         <EditText
-            android:id="@+id/edtPassword"
+            android:id="@+id/edtPasswordREG"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
+            android:drawableLeft="@drawable/icon_pass"
+            android:drawablePadding="10dp"
             android:ems="10"
             android:hint="Mật khẩu"
             android:inputType="textPersonName"
@@ -50,10 +54,12 @@
             android:backgroundTint="@color/colorBtnRegister"/>
 
         <EditText
-            android:id="@+id/edtNameAccount"
+            android:id="@+id/edtNameAccountREG"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
+            android:drawableLeft="@drawable/icon_user"
+            android:drawablePadding="10dp"
             android:ems="10"
             android:hint="Tên hiển thị"
             android:inputType="textPersonName"
@@ -64,7 +70,7 @@
     </LinearLayout>
 
     <Button
-        android:id="@+id/btnRegister"
+        android:id="@+id/btnRegisterREG"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"

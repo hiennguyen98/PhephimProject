@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.example.model.BaiViet;
 import com.example.phephim.R;
+import com.squareup.picasso.Picasso;
 
 public class BaiVietAdapter extends ArrayAdapter<BaiViet> {
     Activity context;
@@ -32,13 +33,25 @@ public class BaiVietAdapter extends ArrayAdapter<BaiViet> {
         txtDiem = mView.findViewById(R.id.txtDiemBaiVietItem);
         txtNgay = mView.findViewById(R.id.txtNgayBaiVietItem);
         txtTieuDe = mView.findViewById(R.id.txtTieuDeBaiVietItem);
+        imgHinh = mView.findViewById(R.id.imgHinhBaiVietItem);
 
         BaiViet baiViet = getItem(position);
 
         txtTieuDe.setText(baiViet.getTieuDe());
-        txtNgay.setText(baiViet.getNgayDang());
-        txtDiem.setText(baiViet.getDiemDanhGia() + " điểm");
+        txtNgay.setText(baiViet.getNgay());
+        txtDiem.setText(baiViet.getDiem() + " điểm");
         txtTacGia.setText(baiViet.getTacGia());
+
+        if(baiViet.getAnh() == null) {
+            imgHinh.setImageResource(R.color.colorBackgroundRegister);
+        }
+        else {
+            Picasso.get()
+                    .load(baiViet.getAnh())
+                    .placeholder(android.R.drawable.ic_menu_report_image)
+                    .error(android.R.drawable.ic_menu_report_image)
+                    .into(imgHinh);
+        }
 
         return mView;
     }
