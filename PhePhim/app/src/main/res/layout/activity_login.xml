@@ -12,7 +12,8 @@
         android:id="@+id/imageView2"
         android:layout_width="match_parent"
         android:layout_height="185dp"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="70dp"
+        android:layout_marginBottom="20dp"
         app:srcCompat="@drawable/logo" />
 
     <LinearLayout
@@ -23,7 +24,7 @@
         android:orientation="vertical">
 
         <EditText
-            android:id="@+id/editText"
+            android:id="@+id/edtEmailLG"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="30dp"
@@ -32,10 +33,12 @@
             android:inputType="textPersonName"
             android:textColor="@android:color/white"
             android:textColorHint="@android:color/white"
-            android:textColorLink="@android:color/white" />
+            android:drawableLeft="@drawable/icon_mail"
+            android:drawablePadding="10dp"
+            android:backgroundTint="@color/colorBtnRegister"/>
 
         <EditText
-            android:id="@+id/editText2"
+            android:id="@+id/edtPasswordLG"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
@@ -43,10 +46,13 @@
             android:inputType="textPersonName"
             android:textColor="@android:color/white"
             android:textColorHint="@android:color/white"
-            android:textColorLink="@android:color/white" />
+            android:drawableLeft="@drawable/icon_pass"
+            android:drawablePadding="10dp"
+            android:backgroundTint="@color/colorBtnRegister"/>
     </LinearLayout>
+
     <Button
-        android:id="@+id/btnRegister"
+        android:id="@+id/btnLoginLG"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -54,5 +60,39 @@
         android:background="@color/colorBtnRegister"
         android:text="ĐĂNG NHẬP"
         android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/txtForgotPassLG"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Quên mật khẩu?"
+        android:layout_marginTop="20dp"
+        android:layout_gravity="center"
+        android:textSize="18dp"
+        android:textColor="@color/colorBtnRegister"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_marginTop="20dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="18dp"
+            android:textColor="@android:color/white"
+            android:text="Bạn chưa có tài khoản? "/>
+
+        <TextView
+            android:id="@+id/txtRegisterLG"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Đăng kí tại đây"
+            android:textSize="18dp"
+            android:textColor="@color/colorBtnRegister"/>
+
+
+    </LinearLayout>
 
 </LinearLayout>
