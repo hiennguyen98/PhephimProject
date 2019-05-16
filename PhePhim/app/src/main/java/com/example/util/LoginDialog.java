@@ -1,8 +1,9 @@
-package com.example.phephim;
+package com.example.util;
 
+import android.app.Activity;
+import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -10,6 +11,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.model.User;
+import com.example.phephim.LoginActivity;
+import com.example.phephim.R;
+import com.example.phephim.RegisterActivity;
 import com.example.service.APIUtils;
 import com.example.service.DataClient;
 
@@ -20,36 +24,37 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginDialog extends Dialog {
 
     EditText edtEmail, edtPassword;
     Button btnLogin;
     TextView txtRegister, txtForgotPassword;
     String email;
     String password;
-    public static User user = null;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+    Activity context;
+
+    public LoginDialog(Activity context) {
+        super(context);
+        this.context = context;
+        setContentView(R.layout.dialog_login);
         addControls();
         addEvents();
     }
 
     private void addControls() {
-        edtEmail = findViewById(R.id.edtEmailLG);
-        edtPassword = findViewById(R.id.edtPasswordLG);
-        btnLogin = findViewById(R.id.btnLoginLG);
-        txtRegister = findViewById(R.id.txtRegisterLG);
-        txtForgotPassword = findViewById(R.id.txtForgotPassLG);
+        edtEmail = findViewById(R.id.edtEmailDialog);
+        edtPassword = findViewById(R.id.edtPasswordDialog);
+        btnLogin = findViewById(R.id.btnLoginDialog);
+        txtRegister = findViewById(R.id.txtRegisterDialog);
+        txtForgotPassword = findViewById(R.id.txtForgotPassDialog);
     }
 
     private void addEvents() {
         txtRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(), RegisterActivity.class));
+                context.startActivity(new Intent(context, RegisterActivity.class));
             }
         });
 
@@ -64,12 +69,12 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if(edtEmail.getText().toString().equals("")) {
-                    Toast.makeText(getApplicationContext(), "Bạn chưa nhập email!",
+                    Toast.makeText(context, "Bạn chưa nhập email!",
                             Toast.LENGTH_LONG).show();
                     edtEmail.requestFocus();
                     return;
                 } else if (edtPassword.getText().toString().equals("")){
-                    Toast.makeText(getApplicationContext(), "Bạn chưa nhập mật khẩu!",
+                    Toast.makeText(context, "Bạn chưa nhập mật khẩu!",
                             Toast.LENGTH_LONG).show();
                     edtPassword.requestFocus();
                 } else {
@@ -89,16 +94,13 @@ public class LoginActivity extends AppCompatActivity {
             public void onResponse(Call<List<User>> call, Response<List<User>> response) {
                 ArrayList<User> users = (ArrayList<User>) response.body();
                 if(users.size() > 0){
-//                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-//                    intent.putExtra("User", users.get(0));
-//                    startActivity(intent);
-                    user = users.get(0);
-                    finish();
+                    LoginActivity.user = users.get(0);
+                    dismiss();
                 }
             }
             @Override
             public void onFailure(Call<List<User>> call, Throwable t) {
-                Toast.makeText(getApplicationContext(), "Email hoặc mật khẩu không chính xác!",
+                Toast.makeText(context, "Email hoặc mật khẩu không chính xác!",
                         Toast.LENGTH_LONG).show();
             }
         });

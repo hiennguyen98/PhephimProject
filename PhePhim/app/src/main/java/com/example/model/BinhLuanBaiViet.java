@@ -1,18 +1,35 @@
 package com.example.model;
 
-public class BinhLuanBaiViet {
-    String user;
-    String ngay;
-    String noiDung;
-    String hinh;
-    int diem;
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 
-    public BinhLuanBaiViet(String user, String ngay, String noiDung, String hinh, int diem) {
-        this.user = user;
-        this.ngay = ngay;
-        this.noiDung = noiDung;
-        this.hinh = hinh;
-        this.diem = diem;
+public class BinhLuanBaiViet {
+
+    @SerializedName("MaBaiViet")
+    @Expose
+    private String maBaiViet;
+    @SerializedName("User")
+    @Expose
+    private String user;
+    @SerializedName("Avatar")
+    @Expose
+    private String avatar;
+    @SerializedName("NoiDung")
+    @Expose
+    private String noiDung;
+    @SerializedName("Ngay")
+    @Expose
+    private String ngay;
+    @SerializedName("DiemBL")
+    @Expose
+    private int diemBL;
+
+    public String getMaBaiViet() {
+        return maBaiViet;
+    }
+
+    public void setMaBaiViet(String maBaiViet) {
+        this.maBaiViet = maBaiViet;
     }
 
     public String getUser() {
@@ -23,12 +40,12 @@ public class BinhLuanBaiViet {
         this.user = user;
     }
 
-    public String getNgay() {
-        return ngay;
+    public String getAvatar() {
+        return avatar;
     }
 
-    public void setNgay(String ngay) {
-        this.ngay = ngay;
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
     }
 
     public String getNoiDung() {
@@ -39,19 +56,20 @@ public class BinhLuanBaiViet {
         this.noiDung = noiDung;
     }
 
-    public String getHinh() {
-        return hinh;
+    public String getNgay() {
+        return ngay;
     }
 
-    public void setHinh(String hinh) {
-        this.hinh = hinh;
+    public void setNgay(String ngay) {
+        this.ngay = ngay;
     }
 
-    public int getDiem() {
-        return diem;
+    public int getDiemBL() {
+        return diemBL;
     }
 
-    public void setDiem(int diem) {
-        this.diem = diem;
+    public void setDiemBL(int diemBL) {
+        this.diemBL = diemBL;
     }
+
 }

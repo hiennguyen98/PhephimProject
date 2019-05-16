@@ -1,7 +1,6 @@
 package com.example.phephim;
 
 import android.content.Intent;
-import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -9,6 +8,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.adapter.BaiVietAdapter;
@@ -18,9 +18,8 @@ import com.example.model.Phim;
 import com.example.service.APIUtils;
 import com.example.service.DataClient;
 import com.example.util.MyListView;
+import com.squareup.picasso.Picasso;
 
-import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -35,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
     PhimAdapter phimAdapter;
     MyListView lvBaiViet;
     BaiVietAdapter baiVietAdapter;
+
     ImageView imgLogin;
 
     @Override
@@ -48,6 +48,8 @@ public class MainActivity extends AppCompatActivity {
         addBaiViet();
     }
 
+
+
     private void addControls() {
         gvPhim = findViewById(R.id.gvPhimHotMain);
         phimAdapter = new PhimAdapter(this, R.layout.phim_hot_item_main);
@@ -57,7 +59,113 @@ public class MainActivity extends AppCompatActivity {
         baiVietAdapter = new BaiVietAdapter(this, R.layout.bai_viet_item);
         lvBaiViet.setAdapter(baiVietAdapter);
 
+        addToolbar();
+    }
+
+    public void addToolbar() {
+        ImageView imgSearch, imgPost, imgHome;
+        TextView txtPhim, txtBaiViet;
+
+        txtPhim = findViewById(R.id.txtPhimToolbar);
+        txtBaiViet = findViewById(R.id.txtBaiVetToolbar);
         imgLogin = findViewById(R.id.imgLoginToolbar);
+        imgHome = findViewById(R.id.imgHomeToolbar);
+        imgSearch = findViewById(R.id.imgSearchToolbar);
+        imgPost = findViewById(R.id.imgDangBaiToolbar);
+
+        txtPhim.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getApplicationContext(), PhimActivity.class));
+            }
+        });
+
+        txtBaiViet.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        imgLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(LoginActivity.user == null){
+                    startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+                } else {
+                    Toast.makeText(getApplicationContext(), "Ngon", Toast.LENGTH_LONG).show();
+                    LoginActivity.user = null;
+                }
+            }
+        });
+
+        imgHome.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        imgSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        imgPost.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+    }
+
+    private void addPhim() {
+        DataClient dataClient = APIUtils.getData();
+        Call<List<Phim>> callback = dataClient.getPhimHot();
+        callback.enqueue(new Callback<List<Phim>>() {
+            @Override
+            public void onResponse(Call<List<Phim>> call, Response<List<Phim>> response) {
+                phimAdapter.clear();
+                for (int i = 0; i < 6; i++){
+                    phimAdapter.add(response.body().get(i));
+                }
+            }
+            @Override
+            public void onFailure(Call<List<Phim>> call, Throwable t) {
+                Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_LONG).show();
+                Log.e("QQQ", t.getMessage());
+            }
+        });
+    }
+
+    private void addBaiViet() {
+        DataClient dataClient = APIUtils.getData();
+        Call<List<BaiViet>> callback = dataClient.getBaiViet();
+        callback.enqueue(new Callback<List<BaiViet>>() {
+            @Override
+            public void onResponse(Call<List<BaiViet>> call, Response<List<BaiViet>> response) {
+                baiVietAdapter.clear();
+                for (int i = 0; i < response.body().size(); i++){
+                    baiVietAdapter.add(response.body().get(i));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<BaiViet>> call, Throwable t) {
+                Log.e("QQQ", t.getMessage());
+            }
+        });
+    }
+
+    public void openBaiVietActivity(View view) {
+        Toast.makeText(getApplicationContext(), "Xem thêm", Toast.LENGTH_LONG).show();
+    }
+
+    public void openPhimActivity(View view) {
+        startActivity(new Intent(this, PhimActivity.class));
     }
 
     private void addEvents() {
@@ -74,61 +182,29 @@ public class MainActivity extends AppCompatActivity {
         lvBaiViet.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(MainActivity.this, BaiVietActivityDetail.class);
+                Intent intent = new Intent(MainActivity.this, BaiVietDetailActivity.class);
                 BaiViet baiViet = baiVietAdapter.getItem(position);
                 intent.putExtra("BaiViet", baiViet);
                 startActivity(intent);
             }
         });
-
-        imgLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(), LoginActivity.class));
-            }
-        });
     }
 
-    private void addPhim() {
-        DataClient dataClient = APIUtils.getData();
-        Call<List<Phim>> callback = dataClient.getPhimHot();
-        callback.enqueue(new Callback<List<Phim>>() {
-            @Override
-            public void onResponse(Call<List<Phim>> call, Response<List<Phim>> response) {
-                for (int i = 0; i < 6; i++){
-                    phimAdapter.add(response.body().get(i));
-                }
-            }
-            @Override
-            public void onFailure(Call<List<Phim>> call, Throwable t) {
-                Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_LONG).show();
-            }
-        });
-    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        addPhim();
+        addBaiViet();
 
-    private void addBaiViet() {
-        DataClient dataClient = APIUtils.getData();
-        Call<List<BaiViet>> callback = dataClient.getBaiViet();
-        callback.enqueue(new Callback<List<BaiViet>>() {
-            @Override
-            public void onResponse(Call<List<BaiViet>> call, Response<List<BaiViet>> response) {
-                for (int i = 0; i < response.body().size(); i++){
-                    baiVietAdapter.add(response.body().get(i));
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<BaiViet>> call, Throwable t) {
-                Log.e("QQQ", t.getMessage());
-            }
-        });
-    }
-
-    public void show5BaiViet(View view) {
-        Toast.makeText(getApplicationContext(), "Xem thêm", Toast.LENGTH_LONG).show();
-    }
-
-    public void openPhimActivity(View view) {
-        startActivity(new Intent(this, PhimActivity.class));
+        if(LoginActivity.user != null){
+            Picasso.get()
+                    .load(LoginActivity.user.getAvatar().toString())
+                    .placeholder(android.R.drawable.ic_menu_report_image)
+                    .error(android.R.drawable.ic_menu_report_image)
+                    .into(imgLogin);
+        }
+        else {
+            imgLogin.setImageResource(R.drawable.login);
+        }
     }
 }

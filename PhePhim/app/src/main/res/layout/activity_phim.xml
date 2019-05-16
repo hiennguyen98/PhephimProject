@@ -16,6 +16,7 @@
         android:layout_marginLeft="15dp"
         android:layout_marginTop="10dp"
         android:layout_marginRight="15dp"
+        android:focusableInTouchMode="true"
         android:orientation="vertical">
 
         <TextView
@@ -41,8 +42,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:backgroundTint="@color/colorTextColor"
-            android:drawableLeft="@android:drawable/ic_menu_search"
             android:hint="Tìm theo tên"
+            android:drawableLeft="@android:drawable/ic_menu_search"
             android:textColor="@color/colorTextColor"
             android:textColorHint="@color/colorTextColor" />
 
@@ -55,10 +56,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Thể loại"
+                android:layout_marginRight="10dp"
                 android:textColor="@color/colorTextColor"
                 android:textSize="14dp" />
 
             <Spinner
+                android:id="@+id/spTheLoai"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 tools:listitem="@android:layout/simple_list_item_1" />

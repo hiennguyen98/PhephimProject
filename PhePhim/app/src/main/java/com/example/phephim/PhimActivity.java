@@ -8,16 +8,18 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.GridView;
+import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.adapter.PhimAdapter;
 import com.example.model.Phim;
 import com.example.service.APIUtils;
 import com.example.service.DataClient;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -30,6 +32,10 @@ public class PhimActivity extends AppCompatActivity {
     PhimAdapter phimAdapter;
     EditText edtSearch;
     TextView txtNotFound;
+    Spinner spTheLoai;
+    List<Phim> phimList = new ArrayList<>();
+    List<String> theLoaiList = new ArrayList<>();
+    int maTheLoai = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +44,8 @@ public class PhimActivity extends AppCompatActivity {
 
         addControls();
         addEvents();
-        getData();
+        getSearchResult(edtSearch.getText().toString(), maTheLoai);
+        setupSpinnerData();
     }
 
     private void addControls() {
@@ -47,8 +54,8 @@ public class PhimActivity extends AppCompatActivity {
         gvPhim.setAdapter(phimAdapter);
 
         edtSearch = findViewById(R.id.edtSearchPhim);
-
         txtNotFound = findViewById(R.id.txtNotFoundPhim);
+        spTheLoai = findViewById(R.id.spTheLoai);
     }
 
     private void addEvents() {
@@ -70,11 +77,11 @@ public class PhimActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if(count > 0) {
-                    getSearchResult(edtSearch.getText().toString().trim());
-                }
-                else {
-                    getData();
+                txtNotFound.setText("");
+                if (edtSearch.getText().toString().equals("")) {
+                    getSearchResult(edtSearch.getText().toString(), maTheLoai);
+                } else {
+                    getSearchResult(edtSearch.getText().toString(), maTheLoai);
                 }
             }
 
@@ -83,18 +90,34 @@ public class PhimActivity extends AppCompatActivity {
 
             }
         });
+
+        spTheLoai.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                maTheLoai = position;
+                getSearchResult(edtSearch.getText().toString(), maTheLoai);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
     }
 
-    private void getSearchResult(String tenPhim) {
+    private void getSearchResult(String tenPhim, int maTheLoai) {
         DataClient dataClient = APIUtils.getData();
-        Call<List<Phim>> call = dataClient.searchPhim(tenPhim);
+        Call<List<Phim>> call = dataClient.searchPhim(tenPhim, maTheLoai);
         call.enqueue(new Callback<List<Phim>>() {
             @Override
             public void onResponse(Call<List<Phim>> call, Response<List<Phim>> response) {
+                if(phimList != null) {
+                    phimList.clear();
+                }
                 phimAdapter.clear();
                 txtNotFound.setText("");
                 for(int i = 0; i < response.body().size(); i++) {
                     phimAdapter.add(response.body().get(i));
+                    phimList.add(response.body().get(i));
                 }
                 Log.e("QQQ", response.body().size()+" - " + response.body().toString());
             }
@@ -102,27 +125,28 @@ public class PhimActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<List<Phim>> call, Throwable t) {
                 Log.e("QQQ", t.getMessage());
-                phimAdapter.clear();
-                txtNotFound.setText("Không tìm thấy kết quả nào phù hợp với từ khóa của bạn.");
+                if(!edtSearch.getText().toString().equals("")) {
+                    phimAdapter.clear();
+                    txtNotFound.setText("Không tìm thấy kết quả nào phù hợp với từ khóa của bạn.");
+                }
             }
         });
     }
 
-    private void getData() {
-        DataClient dataClient = APIUtils.getData();
-        Call<List<Phim>> callback = dataClient.getPhimHot();
-        callback.enqueue(new Callback<List<Phim>>() {
-            @Override
-            public void onResponse(Call<List<Phim>> call, Response<List<Phim>> response) {
-                phimAdapter.clear();
-                for (int i = 0; i < response.body().size(); i++){
-                    phimAdapter.add(response.body().get(i));
-                }
-            }
-            @Override
-            public void onFailure(Call<List<Phim>> call, Throwable t) {
-                Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_LONG).show();
-            }
-        });
+    private void setupSpinnerData() {
+        theLoaiList.add("Tất cả");
+        theLoaiList.add("Kinh dị");
+        theLoaiList.add("Thần thoại");
+        theLoaiList.add("Hành động");
+        theLoaiList.add("Hài");
+        theLoaiList.add("Viễn tưởng");
+        theLoaiList.add("Lịch sử");
+        theLoaiList.add("Âm nhạc");
+        theLoaiList.add("Phiêu lưu");
+        theLoaiList.add("Tình cảm");
+
+        ArrayAdapter<String> adapterSpTheLoai = new ArrayAdapter(this, R.layout.spinner_item,theLoaiList);
+        adapterSpTheLoai.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spTheLoai.setAdapter(adapterSpTheLoai);
     }
 }
