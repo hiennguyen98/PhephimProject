@@ -1,22 +1,38 @@
 package com.example.model;
 
-import java.io.Serializable;
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 
-public class BinhLuanPhim implements Serializable {
-    String user;
-    int diemDanhGia;
-    String binhLuan;
-    String ngayDang;
-    int diemBLP;
-    String image;
+public class BinhLuanPhim {
 
-    public BinhLuanPhim(String user, int diemDanhGia, String binhLuan, String ngayDang, int diemBLP, String image) {
-        this.user = user;
-        this.diemDanhGia = diemDanhGia;
-        this.binhLuan = binhLuan;
-        this.ngayDang = ngayDang;
-        this.diemBLP = diemBLP;
-        this.image = image;
+    @SerializedName("MaPhim")
+    @Expose
+    private String maPhim;
+    @SerializedName("User")
+    @Expose
+    private String user;
+    @SerializedName("Avatar")
+    @Expose
+    private String avatar;
+    @SerializedName("NoiDung")
+    @Expose
+    private String noiDung;
+    @SerializedName("Ngay")
+    @Expose
+    private String ngay;
+    @SerializedName("DiemBL")
+    @Expose
+    private int diemBL;
+    @SerializedName("DiemPhim")
+    @Expose
+    private int diemPhim;
+
+    public String getMaPhim() {
+        return maPhim;
+    }
+
+    public void setMaPhim(String maPhim) {
+        this.maPhim = maPhim;
     }
 
     public String getUser() {
@@ -27,43 +43,44 @@ public class BinhLuanPhim implements Serializable {
         this.user = user;
     }
 
-    public int getDiemDanhGia() {
-        return diemDanhGia;
+    public String getAvatar() {
+        return avatar;
     }
 
-    public void setDiemDanhGia(int diemDanhGia) {
-        this.diemDanhGia = diemDanhGia;
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
     }
 
-    public String getBinhLuan() {
-        return binhLuan;
+    public String getNoiDung() {
+        return noiDung;
     }
 
-    public void setBinhLuan(String binhLuan) {
-        this.binhLuan = binhLuan;
+    public void setNoiDung(String noiDung) {
+        this.noiDung = noiDung;
     }
 
-    public String getNgayDang() {
-        return ngayDang;
+    public String getNgay() {
+        return ngay;
     }
 
-    public void setNgayDang(String ngayDang) {
-        this.ngayDang = ngayDang;
+    public void setNgay(String ngay) {
+        this.ngay = ngay;
     }
 
-    public int getDiemBLP() {
-        return diemBLP;
+    public int getDiemBL() {
+        return diemBL;
     }
 
-    public void setDiemBLP(int diemBLP) {
-        this.diemBLP = diemBLP;
+    public void setDiemBL(int diemBL) {
+        this.diemBL = diemBL;
     }
 
-    public String getImage() {
-        return image;
+    public int getDiemPhim() {
+        return diemPhim;
     }
 
-    public void setImage(String image) {
-        this.image = image;
+    public void setDiemPhim(int diemPhim) {
+        this.diemPhim = diemPhim;
     }
+
 }

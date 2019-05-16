@@ -25,7 +25,6 @@
             android:id="@+id/txtTieuDeBaiVietItem"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:justificationMode="inter_word"
             android:text="Tiêu đề bài viết số 1"
             android:textColor="#fff"
             android:textSize="18sp"

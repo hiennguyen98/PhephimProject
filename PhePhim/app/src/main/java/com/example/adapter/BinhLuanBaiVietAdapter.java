@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.example.model.BinhLuanBaiViet;
 import com.example.phephim.R;
+import com.squareup.picasso.Picasso;
 
 public class BinhLuanBaiVietAdapter extends ArrayAdapter<BinhLuanBaiViet> {
     Activity context;
@@ -40,8 +41,12 @@ public class BinhLuanBaiVietAdapter extends ArrayAdapter<BinhLuanBaiViet> {
         txtUser.setText(item.getUser());
         txtNoiDung.setText(item.getNoiDung());
         txtNgay.setText(item.getNgay());
-        txtDiem.setText(item.getDiem()+"");
-        imgUser.setImageResource(R.drawable.dr_strange);
+        txtDiem.setText(item.getDiemBL()+"");
+        Picasso.get()
+                .load(item.getAvatar())
+                .placeholder(android.R.drawable.ic_menu_report_image)
+                .error(android.R.drawable.ic_menu_report_image)
+                .into(imgUser);
 
         return mView;
     }

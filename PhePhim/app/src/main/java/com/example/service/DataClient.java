@@ -1,6 +1,8 @@
 package com.example.service;
 
 import com.example.model.BaiViet;
+import com.example.model.BinhLuanBaiViet;
+import com.example.model.BinhLuanPhim;
 import com.example.model.Phim;
 import com.example.model.User;
 
@@ -44,5 +46,27 @@ public interface DataClient {
     Call<List<BaiViet>> getBaiViet();
 
     @GET("searchPhim.php")
-    Call<List<Phim>> searchPhim(@Query("tenPhim") String tenPhim);
+    Call<List<Phim>> searchPhim(@Query("tenPhim") String tenPhim,
+                                @Query("theLoai") int maTheLoai);
+
+    @GET("getBinhLuanPhim.php")
+    Call<List<BinhLuanPhim>> getBinhLuanPhim (@Query("maPhim") String maPhim,
+                                              @Query("sapXep") int sapXep);
+
+    @FormUrlEncoded
+    @POST("insertBinhLuanPhim.php")
+    Call<String> insertBinhLuanPhim (@Field("maPhim") String maPhim,
+                                                 @Field("email") String email,
+                                                 @Field("noiDung") String noiDung,
+                                                 @Field("diemPhim") int diemPhim);
+
+    @GET("getBinhLuanBaiViet.php")
+    Call<List<BinhLuanBaiViet>> getBinhLuanBaiViet (@Query("maBaiViet") String maBaiVet,
+                                                    @Query("sapXep") int sapXep);
+
+    @FormUrlEncoded
+    @POST("insertBinhLuanBaiViet.php")
+    Call<String> insertBinhLuanBaiViet (@Field("maBaiViet") String maBaiViet,
+                                     @Field("email") String email,
+                                     @Field("noiDung") String noiDung);
 }

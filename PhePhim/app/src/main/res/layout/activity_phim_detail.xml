@@ -18,8 +18,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:focusableInTouchMode="true">
+            android:focusableInTouchMode="true"
+            android:orientation="vertical">
 
             <ImageView
                 android:id="@+id/imgBannerPhimDetail"
@@ -58,7 +58,6 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="5dp"
-                            android:justificationMode="inter_word"
                             android:text="Spider-Man: Into The Spider-Verse"
                             android:textColor="@android:color/white"
                             android:textSize="24sp"
@@ -87,47 +86,7 @@
                             android:orientation="horizontal">
 
                             <ImageView
-                                android:id="@+id/imageView12"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginRight="5dp"
-                                android:layout_weight="1"
-                                android:src="@drawable/yellowcircle" />
-
-                            <ImageView
-                                android:id="@+id/imageView13"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginRight="5dp"
-                                android:layout_weight="1"
-                                android:src="@drawable/yellowcircle" />
-
-                            <ImageView
-                                android:id="@+id/imageView14"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginRight="5dp"
-                                android:layout_weight="1"
-                                android:src="@drawable/yellowcircle" />
-
-                            <ImageView
-                                android:id="@+id/imageView15"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginRight="5dp"
-                                android:layout_weight="1"
-                                android:src="@drawable/yellowcircle" />
-
-                            <ImageView
-                                android:id="@+id/imageView6"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginRight="5dp"
-                                android:layout_weight="1"
-                                android:src="@drawable/yellowcircle" />
-
-                            <ImageView
-                                android:id="@+id/imageView7"
+                                android:id="@+id/imgStar1"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginRight="5dp"
@@ -135,7 +94,7 @@
                                 android:src="@drawable/darkstar" />
 
                             <ImageView
-                                android:id="@+id/imageView8"
+                                android:id="@+id/imgStar2"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginRight="5dp"
@@ -143,7 +102,7 @@
                                 android:src="@drawable/darkstar" />
 
                             <ImageView
-                                android:id="@+id/imageView9"
+                                android:id="@+id/imgStar3"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginRight="5dp"
@@ -151,7 +110,7 @@
                                 android:src="@drawable/darkstar" />
 
                             <ImageView
-                                android:id="@+id/imageView10"
+                                android:id="@+id/imgStar4"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginRight="5dp"
@@ -159,7 +118,47 @@
                                 android:src="@drawable/darkstar" />
 
                             <ImageView
-                                android:id="@+id/imageView11"
+                                android:id="@+id/imgStar5"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginRight="5dp"
+                                android:layout_weight="1"
+                                android:src="@drawable/darkstar" />
+
+                            <ImageView
+                                android:id="@+id/imgStar6"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginRight="5dp"
+                                android:layout_weight="1"
+                                android:src="@drawable/darkstar" />
+
+                            <ImageView
+                                android:id="@+id/imgStar7"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginRight="5dp"
+                                android:layout_weight="1"
+                                android:src="@drawable/darkstar" />
+
+                            <ImageView
+                                android:id="@+id/imgStar8"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginRight="5dp"
+                                android:layout_weight="1"
+                                android:src="@drawable/darkstar" />
+
+                            <ImageView
+                                android:id="@+id/imgStar9"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginRight="5dp"
+                                android:layout_weight="1"
+                                android:src="@drawable/darkstar" />
+
+                            <ImageView
+                                android:id="@+id/imgStar10"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginRight="5dp"
@@ -217,6 +216,7 @@
                 android:id="@+id/btnGuiBLDanhGiaPhim"
                 android:layout_width="60dp"
                 android:layout_height="40dp"
+                android:onClick="guiBinhLuanPhim"
                 android:layout_gravity="right"
                 android:layout_marginRight="14dp"
                 android:background="@color/colorBorder"
@@ -250,11 +250,11 @@
                 android:id="@+id/txtNoiDungPhimDetail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:justificationMode="inter_word"
                 android:layout_marginLeft="15dp"
                 android:layout_marginTop="5dp"
                 android:layout_marginRight="15dp"
                 android:layout_marginBottom="20dp"
+                android:justificationMode="inter_word"
                 android:text="Người Nhện: Vũ Trụ Mới xoay quanh cuộc sống thường nhật của Miles Morales, khi cậu vừa phải tập làm quen với mội trường học đường, vừa phải đối mặt với những xung đột trong cuộc sống. Tuy nhiên, không ai biết rằng cậu chính là Người Nhện, người anh hùng bí ẩn bảo vệ cho Brooklyn khỏi bọn trộm cướp. Trong lần gặp gỡ “tiền bối” Peter Parker, Miles Morales phát hiện ra thế giới mà cậu đang sống đang phải đối mặt với những kẻ thù mới đến từ một thực tại song song mang tên Spider-Verse. Liệu các Người Nhện có thể cứu lấy thế giới của mình?"
                 android:textColor="@color/colorTextColor"
                 android:textSize="16sp" />
@@ -391,8 +391,8 @@
                 android:layout_height="match_parent"
                 android:layout_marginLeft="15dp"
                 android:layout_marginRight="15dp"
-                android:orientation="horizontal"
-                android:layout_marginBottom="20dp">
+                android:layout_marginBottom="20dp"
+                android:orientation="horizontal">
 
                 <TextView
                     android:id="@+id/textView18"
@@ -441,10 +441,10 @@
                     android:textSize="16sp" />
 
                 <Spinner
-                    android:id="@+id/spinnerSapXepDetail"
+                    android:id="@+id/spnPhimDetail"
                     android:layout_width="match_parent"
-                    android:layout_marginLeft="10dp"
-                    android:layout_height="match_parent" />
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="10dp" />
 
             </LinearLayout>
 
@@ -465,18 +465,16 @@
                 android:layout_height="match_parent"
                 android:layout_marginLeft="15dp"
                 android:layout_marginRight="15dp"
-                android:layout_marginBottom="10dp"/>
+                android:layout_marginBottom="10dp" />
 
-            <Button
-                android:id="@+id/btnXemThemBLP"
-                android:layout_width="wrap_content"
-                android:layout_height="40dp"
-                android:layout_gravity="center"
-                android:layout_marginTop="10dp"
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/txtNoCommentPhim"
+                android:textColor="@color/colorTextColor"
+                android:gravity="center"
                 android:layout_marginBottom="20dp"
-                android:background="@color/colorBorder"
-                android:text="Xem thêm"
-                android:textColor="@color/colorTextColor" />
+                android:text=""/>
 
         </LinearLayout>
     </ScrollView>
