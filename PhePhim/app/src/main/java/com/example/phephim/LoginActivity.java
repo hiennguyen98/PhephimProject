@@ -64,11 +64,13 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if(edtEmail.getText().toString().equals("")) {
+                    edtEmail.setError("Bạn chưa nhập email");
                     Toast.makeText(getApplicationContext(), "Bạn chưa nhập email!",
                             Toast.LENGTH_LONG).show();
                     edtEmail.requestFocus();
                     return;
                 } else if (edtPassword.getText().toString().equals("")){
+                    edtPassword.setError("Bạn chưa nhập mật khẩu");
                     Toast.makeText(getApplicationContext(), "Bạn chưa nhập mật khẩu!",
                             Toast.LENGTH_LONG).show();
                     edtPassword.requestFocus();
@@ -89,9 +91,6 @@ public class LoginActivity extends AppCompatActivity {
             public void onResponse(Call<List<User>> call, Response<List<User>> response) {
                 ArrayList<User> users = (ArrayList<User>) response.body();
                 if(users.size() > 0){
-//                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-//                    intent.putExtra("User", users.get(0));
-//                    startActivity(intent);
                     user = users.get(0);
                     finish();
                 }

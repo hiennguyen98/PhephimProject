@@ -50,7 +50,14 @@ public class RegisterActivity extends AppCompatActivity {
                     email = edtEmail.getText().toString();
                     name = edtUsername.getText().toString();
                     password = edtPass.getText().toString();
-                    register(email, name, password);
+                    if (!email.matches("[a-zA-Z0-9._-]+@[a-z]+\\.[a-z]+")) {
+                        edtEmail.setError("Email không hợp lệ");
+                        Toast.makeText(getApplicationContext(), "Email không hợp lệ",
+                                Toast.LENGTH_LONG).show();
+                    }
+                    else {
+                        register(email, name, password);
+                    }
                 }
             }
         });
@@ -64,11 +71,12 @@ public class RegisterActivity extends AppCompatActivity {
             public void onResponse(Call<String> call, Response<String> response) {
                 String result = response.body();
                 if (result.equals("Success")) {
-                    Toast.makeText(getApplicationContext(), "Success",
+                    Toast.makeText(getApplicationContext(), "Đăng kí thành công",
                             Toast.LENGTH_LONG).show();
                     finish();
                 } else {
-                    Toast.makeText(getApplicationContext(), "Fail",
+                    edtEmail.setError("Email đã được sử dụng");
+                    Toast.makeText(getApplicationContext(), "Email đã được sử dụng.",
                             Toast.LENGTH_LONG).show();
                 }
             }

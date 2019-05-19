@@ -69,4 +69,8 @@ public interface DataClient {
     Call<String> insertBinhLuanBaiViet (@Field("maBaiViet") String maBaiViet,
                                      @Field("email") String email,
                                      @Field("noiDung") String noiDung);
+
+    @GET("getBinhLuanPhimOfUser.php")
+    Call<List<BinhLuanPhim>> getBinhLuanPhimOfUser (@Query("email") String email,
+                                              @Query("maPhim") String maPhim);
 }

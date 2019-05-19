@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -17,6 +18,7 @@ import android.widget.Toast;
 import com.example.adapter.BinhLuanPhimAdapter;
 import com.example.model.BinhLuanPhim;
 import com.example.model.Phim;
+import com.example.model.User;
 import com.example.service.APIUtils;
 import com.example.service.DataClient;
 import com.example.util.LoginDialog;
@@ -36,6 +38,7 @@ public class PhimDetailActivity extends AppCompatActivity implements View.OnClic
     TextView txtDiem, txtTieuDe, txtNoiDung, txtTheLoai, txtDaoDien, txtDienVien, txtNgay, txtThoiLuong, txtNoComment;
     EditText edtBinhLuan;
     ProgressBar pbPhimDetail;
+    Button btnGuiBinhLuan;
 
     Spinner spinnerSapXep;
     MyListView lvBinhLuan;
@@ -84,6 +87,8 @@ public class PhimDetailActivity extends AppCompatActivity implements View.OnClic
         imgStar8 = findViewById(R.id.imgStar8);
         imgStar9 = findViewById(R.id.imgStar9);
         imgStar10 = findViewById(R.id.imgStar10);
+
+        btnGuiBinhLuan = findViewById(R.id.btnGuiBLDanhGiaPhim);
     }
 
     private void setPhimData() {
@@ -159,7 +164,7 @@ public class PhimDetailActivity extends AppCompatActivity implements View.OnClic
         });
     }
 
-    public void guiBinhLuanPhim(View view) {
+    public void guiBinhLuanPhim() {
 
         if(LoginActivity.user == null) {
             Toast.makeText(getApplicationContext(), "Bạn cần đăng nhập để gửi đánh giá.", Toast.LENGTH_LONG).show();
@@ -207,6 +212,152 @@ public class PhimDetailActivity extends AppCompatActivity implements View.OnClic
         }
     }
 
+    private void setBinhLuanOfUser(User user, String maPhim) {
+        if(user != null) {
+            DataClient dataClient = APIUtils.getData();
+            Call<List<BinhLuanPhim>> call = dataClient.getBinhLuanPhimOfUser(user.getEmail(), maPhim);
+            call.enqueue(new Callback<List<BinhLuanPhim>>() {
+                @Override
+                public void onResponse(Call<List<BinhLuanPhim>> call, Response<List<BinhLuanPhim>> response) {
+                    if(response.body().size() == 0) {
+                        return;
+                    }
+                    edtBinhLuan.setVisibility(View.GONE);
+                    edtBinhLuan.setText(response.body().get(0).getNoiDung());
+                    btnGuiBinhLuan.setText("   Sửa đánh giá   ");
+                    int diemDanhGia = response.body().get(0).getDiemPhim();
+                    switch (diemDanhGia) {
+                        case 1:
+                            imgStar1.setImageResource(R.drawable.yellowstart);
+                            imgStar2.setImageResource(R.drawable.darkstar);
+                            imgStar3.setImageResource(R.drawable.darkstar);
+                            imgStar4.setImageResource(R.drawable.darkstar);
+                            imgStar5.setImageResource(R.drawable.darkstar);
+                            imgStar6.setImageResource(R.drawable.darkstar);
+                            imgStar7.setImageResource(R.drawable.darkstar);
+                            imgStar8.setImageResource(R.drawable.darkstar);
+                            imgStar9.setImageResource(R.drawable.darkstar);
+                            imgStar10.setImageResource(R.drawable.darkstar);
+                            break;
+                        case 2:
+                            imgStar1.setImageResource(R.drawable.yellowstart);
+                            imgStar2.setImageResource(R.drawable.yellowstart);
+                            imgStar3.setImageResource(R.drawable.darkstar);
+                            imgStar4.setImageResource(R.drawable.darkstar);
+                            imgStar5.setImageResource(R.drawable.darkstar);
+                            imgStar6.setImageResource(R.drawable.darkstar);
+                            imgStar7.setImageResource(R.drawable.darkstar);
+                            imgStar8.setImageResource(R.drawable.darkstar);
+                            imgStar9.setImageResource(R.drawable.darkstar);
+                            imgStar10.setImageResource(R.drawable.darkstar);
+                            break;
+                        case 3:
+                            imgStar1.setImageResource(R.drawable.yellowstart);
+                            imgStar2.setImageResource(R.drawable.yellowstart);
+                            imgStar3.setImageResource(R.drawable.yellowstart);
+                            imgStar4.setImageResource(R.drawable.darkstar);
+                            imgStar5.setImageResource(R.drawable.darkstar);
+                            imgStar6.setImageResource(R.drawable.darkstar);
+                            imgStar7.setImageResource(R.drawable.darkstar);
+                            imgStar8.setImageResource(R.drawable.darkstar);
+                            imgStar9.setImageResource(R.drawable.darkstar);
+                            imgStar10.setImageResource(R.drawable.darkstar);
+                            break;
+                        case 4:
+                            imgStar1.setImageResource(R.drawable.yellowstart);
+                            imgStar2.setImageResource(R.drawable.yellowstart);
+                            imgStar3.setImageResource(R.drawable.yellowstart);
+                            imgStar4.setImageResource(R.drawable.yellowstart);
+                            imgStar5.setImageResource(R.drawable.darkstar);
+                            imgStar6.setImageResource(R.drawable.darkstar);
+                            imgStar7.setImageResource(R.drawable.darkstar);
+                            imgStar8.setImageResource(R.drawable.darkstar);
+                            imgStar9.setImageResource(R.drawable.darkstar);
+                            imgStar10.setImageResource(R.drawable.darkstar);
+                            break;
+                        case 5:
+                            imgStar1.setImageResource(R.drawable.yellowstart);
+                            imgStar2.setImageResource(R.drawable.yellowstart);
+                            imgStar3.setImageResource(R.drawable.yellowstart);
+                            imgStar4.setImageResource(R.drawable.yellowstart);
+                            imgStar5.setImageResource(R.drawable.yellowstart);
+                            imgStar6.setImageResource(R.drawable.darkstar);
+                            imgStar7.setImageResource(R.drawable.darkstar);
+                            imgStar8.setImageResource(R.drawable.darkstar);
+                            imgStar9.setImageResource(R.drawable.darkstar);
+                            imgStar10.setImageResource(R.drawable.darkstar);
+                            break;
+                        case 6:
+                            imgStar1.setImageResource(R.drawable.yellowstart);
+                            imgStar2.setImageResource(R.drawable.yellowstart);
+                            imgStar3.setImageResource(R.drawable.yellowstart);
+                            imgStar4.setImageResource(R.drawable.yellowstart);
+                            imgStar5.setImageResource(R.drawable.yellowstart);
+                            imgStar6.setImageResource(R.drawable.yellowstart);
+                            imgStar7.setImageResource(R.drawable.darkstar);
+                            imgStar8.setImageResource(R.drawable.darkstar);
+                            imgStar9.setImageResource(R.drawable.darkstar);
+                            imgStar10.setImageResource(R.drawable.darkstar);
+                            break;
+                        case 7:
+                            imgStar1.setImageResource(R.drawable.yellowstart);
+                            imgStar2.setImageResource(R.drawable.yellowstart);
+                            imgStar3.setImageResource(R.drawable.yellowstart);
+                            imgStar4.setImageResource(R.drawable.yellowstart);
+                            imgStar5.setImageResource(R.drawable.yellowstart);
+                            imgStar6.setImageResource(R.drawable.yellowstart);
+                            imgStar7.setImageResource(R.drawable.yellowstart);
+                            imgStar8.setImageResource(R.drawable.darkstar);
+                            imgStar9.setImageResource(R.drawable.darkstar);
+                            imgStar10.setImageResource(R.drawable.darkstar);
+                            break;
+                        case 8:
+                            imgStar1.setImageResource(R.drawable.yellowstart);
+                            imgStar2.setImageResource(R.drawable.yellowstart);
+                            imgStar3.setImageResource(R.drawable.yellowstart);
+                            imgStar4.setImageResource(R.drawable.yellowstart);
+                            imgStar5.setImageResource(R.drawable.yellowstart);
+                            imgStar6.setImageResource(R.drawable.yellowstart);
+                            imgStar7.setImageResource(R.drawable.yellowstart);
+                            imgStar8.setImageResource(R.drawable.yellowstart);
+                            imgStar9.setImageResource(R.drawable.darkstar);
+                            imgStar10.setImageResource(R.drawable.darkstar);
+                            break;
+                        case 9:
+                            imgStar1.setImageResource(R.drawable.yellowstart);
+                            imgStar2.setImageResource(R.drawable.yellowstart);
+                            imgStar3.setImageResource(R.drawable.yellowstart);
+                            imgStar4.setImageResource(R.drawable.yellowstart);
+                            imgStar5.setImageResource(R.drawable.yellowstart);
+                            imgStar6.setImageResource(R.drawable.yellowstart);
+                            imgStar7.setImageResource(R.drawable.yellowstart);
+                            imgStar8.setImageResource(R.drawable.yellowstart);
+                            imgStar9.setImageResource(R.drawable.yellowstart);
+                            imgStar10.setImageResource(R.drawable.darkstar);
+                            break;
+                        case 10:
+                            imgStar1.setImageResource(R.drawable.yellowstart);
+                            imgStar2.setImageResource(R.drawable.yellowstart);
+                            imgStar3.setImageResource(R.drawable.yellowstart);
+                            imgStar4.setImageResource(R.drawable.yellowstart);
+                            imgStar5.setImageResource(R.drawable.yellowstart);
+                            imgStar6.setImageResource(R.drawable.yellowstart);
+                            imgStar7.setImageResource(R.drawable.yellowstart);
+                            imgStar8.setImageResource(R.drawable.yellowstart);
+                            imgStar9.setImageResource(R.drawable.yellowstart);
+                            imgStar10.setImageResource(R.drawable.yellowstart);
+                            break;
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<List<BinhLuanPhim>> call, Throwable t) {
+                    Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_LONG).show();
+                }
+            });
+        }
+    }
+
     private void addEvents(){
         imgStar1.setOnClickListener(this);
         imgStar2.setOnClickListener(this);
@@ -218,6 +369,18 @@ public class PhimDetailActivity extends AppCompatActivity implements View.OnClic
         imgStar8.setOnClickListener(this);
         imgStar9.setOnClickListener(this);
         imgStar10.setOnClickListener(this);
+
+        btnGuiBinhLuan.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(btnGuiBinhLuan.getText().equals("Gửi")){
+                    guiBinhLuanPhim();
+                } else {
+                    edtBinhLuan.setVisibility(View.VISIBLE);
+                    Toast.makeText(getApplicationContext(), "OK", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
     }
 
     @Override
@@ -437,5 +600,7 @@ public class PhimDetailActivity extends AppCompatActivity implements View.OnClic
         else {
             imgLogin.setImageResource(R.drawable.login);
         }
+
+        setBinhLuanOfUser(LoginActivity.user, phim.getId());
     }
 }
