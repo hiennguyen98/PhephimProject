@@ -1,5 +1,7 @@
 package com.example.phephim;
 
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -7,17 +9,23 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.adapter.PhimAdapter;
+import com.example.model.BaiViet;
 import com.example.model.Phim;
 import com.example.service.APIUtils;
 import com.example.service.DataClient;
+import com.example.util.LoginDialog;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +40,7 @@ public class PhimActivity extends AppCompatActivity {
     PhimAdapter phimAdapter;
     EditText edtSearch;
     TextView txtNotFound;
+    ImageView imgLogin;
     Spinner spTheLoai;
     List<Phim> phimList = new ArrayList<>();
     List<String> theLoaiList = new ArrayList<>();
@@ -46,6 +55,7 @@ public class PhimActivity extends AppCompatActivity {
         addEvents();
         getSearchResult(edtSearch.getText().toString(), maTheLoai);
         setupSpinnerData();
+        addToolbar();
     }
 
     private void addControls() {
@@ -148,5 +158,101 @@ public class PhimActivity extends AppCompatActivity {
         ArrayAdapter<String> adapterSpTheLoai = new ArrayAdapter(this, R.layout.spinner_item,theLoaiList);
         adapterSpTheLoai.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spTheLoai.setAdapter(adapterSpTheLoai);
+    }
+
+    public void addToolbar() {
+        ImageView imgSearch, imgPost, imgHome;
+        TextView txtPhim, txtBaiViet;
+        final LoginDialog loginDialog = new LoginDialog(PhimActivity.this);
+
+        txtPhim = findViewById(R.id.txtPhimToolbar);
+        txtBaiViet = findViewById(R.id.txtBaiVetToolbar);
+        imgLogin = findViewById(R.id.imgLoginToolbar);
+        imgHome = findViewById(R.id.imgHomeToolbar);
+        imgSearch = findViewById(R.id.imgSearchToolbar);
+        imgPost = findViewById(R.id.imgDangBaiToolbar);
+
+        txtPhim.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        if(LoginActivity.user != null){
+            Picasso.get()
+                    .load(LoginActivity.user.getAvatar())
+                    .placeholder(android.R.drawable.ic_menu_report_image)
+                    .error(android.R.drawable.ic_menu_report_image)
+                    .into(imgLogin);
+        } else {
+            imgLogin.setImageResource(R.drawable.login);
+        }
+
+        imgLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(LoginActivity.user == null){
+                    startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+                } else {
+                    startActivity(new Intent(getApplicationContext(), UserActivity.class));
+                }
+            }
+        });
+
+        txtBaiViet.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getApplicationContext(), BaiVietActivity.class));
+            }
+        });
+
+        imgHome.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getApplicationContext(), MainActivity.class));
+            }
+        });
+
+        imgSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                edtSearch.requestFocus();
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.showSoftInput(edtSearch, InputMethodManager.SHOW_IMPLICIT);
+            }
+        });
+
+        imgPost.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(LoginActivity.user == null) {
+                    Toast.makeText(getApplicationContext(), "Bạn cần đăng nhập để đăng bài.",
+                            Toast.LENGTH_LONG).show();
+                    loginDialog.show();
+                } else {
+                    startActivity(new Intent(getApplicationContext(), DangBaiVietActivity.class));
+                }
+            }
+        });
+
+        loginDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                if(LoginActivity.user != null) {
+                    startActivity(new Intent(getApplicationContext(), DangBaiVietActivity.class));
+                }
+            }
+        });
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        addControls();
+        addEvents();
+        getSearchResult(edtSearch.getText().toString(), maTheLoai);
+        setupSpinnerData();
+        addToolbar();
     }
 }

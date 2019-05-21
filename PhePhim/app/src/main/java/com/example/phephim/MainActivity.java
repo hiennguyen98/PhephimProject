@@ -1,5 +1,6 @@
 package com.example.phephim;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -17,6 +18,7 @@ import com.example.model.BaiViet;
 import com.example.model.Phim;
 import com.example.service.APIUtils;
 import com.example.service.DataClient;
+import com.example.util.LoginDialog;
 import com.example.util.MyListView;
 import com.squareup.picasso.Picasso;
 
@@ -48,8 +50,6 @@ public class MainActivity extends AppCompatActivity {
         addBaiViet();
     }
 
-
-
     private void addControls() {
         gvPhim = findViewById(R.id.gvPhimHotMain);
         phimAdapter = new PhimAdapter(this, R.layout.phim_hot_item_main);
@@ -65,6 +65,7 @@ public class MainActivity extends AppCompatActivity {
     public void addToolbar() {
         ImageView imgSearch, imgPost, imgHome;
         TextView txtPhim, txtBaiViet;
+        final LoginDialog loginDialog = new LoginDialog(MainActivity.this);
 
         txtPhim = findViewById(R.id.txtPhimToolbar);
         txtBaiViet = findViewById(R.id.txtBaiVetToolbar);
@@ -83,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
         txtBaiViet.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                startActivity(new Intent(getApplicationContext(), BaiVietActivity.class));
             }
         });
 
@@ -93,8 +94,7 @@ public class MainActivity extends AppCompatActivity {
                 if(LoginActivity.user == null){
                     startActivity(new Intent(getApplicationContext(), LoginActivity.class));
                 } else {
-                    Toast.makeText(getApplicationContext(), "Ngon", Toast.LENGTH_LONG).show();
-                    LoginActivity.user = null;
+                    startActivity(new Intent(getApplicationContext(), UserActivity.class));
                 }
             }
         });
@@ -109,14 +109,29 @@ public class MainActivity extends AppCompatActivity {
         imgSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                startActivity(new Intent(getApplicationContext(), PhimActivity.class));
             }
         });
 
         imgPost.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(LoginActivity.user == null) {
+                    Toast.makeText(getApplicationContext(), "Bạn cần đăng nhập để đăng bài.",
+                            Toast.LENGTH_LONG).show();
+                    loginDialog.show();
+                } else {
+                    startActivity(new Intent(getApplicationContext(), DangBaiVietActivity.class));
+                }
+            }
+        });
 
+        loginDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                if(LoginActivity.user != null) {
+                    startActivity(new Intent(getApplicationContext(), DangBaiVietActivity.class));
+                }
             }
         });
 
@@ -124,7 +139,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void addPhim() {
         DataClient dataClient = APIUtils.getData();
-        Call<List<Phim>> callback = dataClient.getPhimHot();
+        Call<List<Phim>> callback = dataClient.getPhimHot("");
         callback.enqueue(new Callback<List<Phim>>() {
             @Override
             public void onResponse(Call<List<Phim>> call, Response<List<Phim>> response) {
@@ -143,7 +158,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void addBaiViet() {
         DataClient dataClient = APIUtils.getData();
-        Call<List<BaiViet>> callback = dataClient.getBaiViet();
+        Call<List<BaiViet>> callback = dataClient.getBaiViet("");
         callback.enqueue(new Callback<List<BaiViet>>() {
             @Override
             public void onResponse(Call<List<BaiViet>> call, Response<List<BaiViet>> response) {
@@ -198,7 +213,7 @@ public class MainActivity extends AppCompatActivity {
 
         if(LoginActivity.user != null){
             Picasso.get()
-                    .load(LoginActivity.user.getAvatar().toString())
+                    .load(LoginActivity.user.getAvatar())
                     .placeholder(android.R.drawable.ic_menu_report_image)
                     .error(android.R.drawable.ic_menu_report_image)
                     .into(imgLogin);
@@ -207,4 +222,5 @@ public class MainActivity extends AppCompatActivity {
             imgLogin.setImageResource(R.drawable.login);
         }
     }
+
 }

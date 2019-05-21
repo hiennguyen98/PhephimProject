@@ -13,7 +13,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".BaiVietActivity"></activity>
+        <activity android:name=".DangBaiVietActivity"></activity>
+        <activity android:name=".UserActivity" />
+        <activity android:name=".BaiVietActivity" />
         <activity android:name=".PhimActivity" />
         <activity android:name=".BaiVietDetailActivity" />
         <activity android:name=".PhimDetailActivity" />

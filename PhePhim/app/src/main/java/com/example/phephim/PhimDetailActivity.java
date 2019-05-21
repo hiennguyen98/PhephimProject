@@ -1,5 +1,6 @@
 package com.example.phephim;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -25,6 +26,7 @@ import com.example.util.LoginDialog;
 import com.example.util.MyListView;
 import com.squareup.picasso.Picasso;
 
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,13 +40,14 @@ public class PhimDetailActivity extends AppCompatActivity implements View.OnClic
     TextView txtDiem, txtTieuDe, txtNoiDung, txtTheLoai, txtDaoDien, txtDienVien, txtNgay, txtThoiLuong, txtNoComment;
     EditText edtBinhLuan;
     ProgressBar pbPhimDetail;
-    Button btnGuiBinhLuan;
+    Button btnGuiBinhLuan, btnHuy, btnXoa;
 
     Spinner spinnerSapXep;
     MyListView lvBinhLuan;
     BinhLuanPhimAdapter adapterBL;
     Phim phim;
     int diemPhim = -1;
+    LoginDialog loginDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,6 +92,11 @@ public class PhimDetailActivity extends AppCompatActivity implements View.OnClic
         imgStar10 = findViewById(R.id.imgStar10);
 
         btnGuiBinhLuan = findViewById(R.id.btnGuiBLDanhGiaPhim);
+        btnHuy = findViewById(R.id.btnHuyPD);
+        btnHuy.setVisibility(View.GONE);
+        btnXoa = findViewById(R.id.btnXoaPD);
+        btnXoa.setVisibility(View.GONE);
+        loginDialog = new LoginDialog(this);
     }
 
     private void setPhimData() {
@@ -168,7 +176,6 @@ public class PhimDetailActivity extends AppCompatActivity implements View.OnClic
 
         if(LoginActivity.user == null) {
             Toast.makeText(getApplicationContext(), "Bạn cần đăng nhập để gửi đánh giá.", Toast.LENGTH_LONG).show();
-            LoginDialog loginDialog = new LoginDialog(this);
             loginDialog.show();
             return;
         }
@@ -196,7 +203,22 @@ public class PhimDetailActivity extends AppCompatActivity implements View.OnClic
                 public void onResponse(Call<String> call, Response<String> response) {
                     if (response.body().equals("Success")) {
                         spinnerSapXep.setSelection(1);
-                        edtBinhLuan.setText("");
+                        btnGuiBinhLuan.setText("   Sửa đánh giá   ");
+                        DataClient dataClient1 = APIUtils.getData();
+                        Call<List<Phim>> call1 = dataClient1.getPhimHot(phim.getTen());
+                        call1.enqueue(new Callback<List<Phim>>() {
+                            @Override
+                            public void onResponse(Call<List<Phim>> call, Response<List<Phim>> response) {
+                                phim = response.body().get(0);
+                                txtDiem.setText(phim.getDiem()+"");
+                            }
+
+                            @Override
+                            public void onFailure(Call<List<Phim>> call, Throwable t) {
+
+                            }
+                        });
+                        edtBinhLuan.setVisibility(View.GONE);
                         lvBinhLuan.requestFocus();
                     } else {
                         Toast.makeText(getApplicationContext(), "Đã có lỗi xãy ra!",
@@ -375,10 +397,101 @@ public class PhimDetailActivity extends AppCompatActivity implements View.OnClic
             public void onClick(View v) {
                 if(btnGuiBinhLuan.getText().equals("Gửi")){
                     guiBinhLuanPhim();
+                } else if(btnGuiBinhLuan.getText().equals("Lưu")){
+                    DataClient updateBinhLuan = APIUtils.getData();
+                    Call<String> callLuu =
+                            updateBinhLuan.updateBinhLuanPhimOfUser(
+                                    LoginActivity.user.getEmail(),
+                                    phim.getId(),
+                                    edtBinhLuan.getText().toString()
+                                    );
+                    callLuu.enqueue(new Callback<String>() {
+                        @Override
+                        public void onResponse(Call<String> call, Response<String> response) {
+                            if(response.body().equals("Success")){
+                                Toast.makeText(getApplicationContext(),"Cập nhật thành công!",
+                                        Toast.LENGTH_LONG).show();
+                                btnXoa.setVisibility(View.GONE);
+                                btnHuy.setVisibility(View.GONE);
+                                edtBinhLuan.setVisibility(View.GONE);
+                                btnGuiBinhLuan.setText("   Sửa đánh giá   ");
+                                setBinhLuanData(1);
+                            } else {
+                                Toast.makeText(getApplicationContext(), "Có lỗi xảy ra, không thể cập nhật!",
+                                        Toast.LENGTH_LONG).show();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<String> call, Throwable t) {
+
+                        }
+                    });
                 } else {
                     edtBinhLuan.setVisibility(View.VISIBLE);
-                    Toast.makeText(getApplicationContext(), "OK", Toast.LENGTH_LONG).show();
+                    btnHuy.setVisibility(View.VISIBLE);
+                    btnXoa.setVisibility(View.VISIBLE);
+                    btnGuiBinhLuan.setText("Lưu");
                 }
+            }
+        });
+
+        btnHuy.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                btnXoa.setVisibility(View.GONE);
+                btnHuy.setVisibility(View.GONE);
+                edtBinhLuan.setVisibility(View.GONE);
+                btnGuiBinhLuan.setText("   Sửa đánh giá   ");
+            }
+        });
+
+        btnXoa.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DataClient deleteBL = APIUtils.getData();
+                Call<String> callDeleteBL = deleteBL.deleteBinhLuanPhim(LoginActivity.user.getEmail(), phim.getId());
+                callDeleteBL.enqueue(new Callback<String>() {
+                    @Override
+                    public void onResponse(Call<String> call, Response<String> response) {
+                        if(response.body().equals("Success")){
+                            Toast.makeText(getApplicationContext(), "Xóa thành công",
+                                    Toast.LENGTH_LONG).show();
+                            btnXoa.setVisibility(View.GONE);
+                            btnHuy.setVisibility(View.GONE);
+                            edtBinhLuan.setText("");
+                            btnGuiBinhLuan.setText("Gửi");
+                            edtBinhLuan.setVisibility(View.VISIBLE);
+                            imgStar1.setImageResource(R.drawable.darkstar);
+                            imgStar2.setImageResource(R.drawable.darkstar);
+                            imgStar3.setImageResource(R.drawable.darkstar);
+                            imgStar4.setImageResource(R.drawable.darkstar);
+                            imgStar5.setImageResource(R.drawable.darkstar);
+                            imgStar6.setImageResource(R.drawable.darkstar);
+                            imgStar7.setImageResource(R.drawable.darkstar);
+                            imgStar8.setImageResource(R.drawable.darkstar);
+                            imgStar9.setImageResource(R.drawable.darkstar);
+                            imgStar10.setImageResource(R.drawable.darkstar);
+                            setBinhLuanData(0);
+                        }
+                        else {
+                            Toast.makeText(getApplicationContext(), "Xóa thất bại, Có lỗi xảy ra!",
+                                    Toast.LENGTH_LONG).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<String> call, Throwable t) {
+
+                    }
+                });
+            }
+        });
+
+        loginDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                loadData();
             }
         });
     }
@@ -530,6 +643,7 @@ public class PhimDetailActivity extends AppCompatActivity implements View.OnClic
     public void addToolbar() {
         ImageView imgSearch, imgPost, imgHome;
         TextView txtPhim, txtBaiViet;
+        final LoginDialog loginDialog = new LoginDialog(PhimDetailActivity.this);
 
         txtPhim = findViewById(R.id.txtPhimToolbar);
         txtBaiViet = findViewById(R.id.txtBaiVetToolbar);
@@ -545,12 +659,15 @@ public class PhimDetailActivity extends AppCompatActivity implements View.OnClic
             }
         });
 
-        txtBaiViet.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
+        if(LoginActivity.user != null){
+            Picasso.get()
+                    .load(LoginActivity.user.getAvatar())
+                    .placeholder(android.R.drawable.ic_menu_report_image)
+                    .error(android.R.drawable.ic_menu_report_image)
+                    .into(imgLogin);
+        } else {
+            imgLogin.setImageResource(R.drawable.login);
+        }
 
         imgLogin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -558,49 +675,86 @@ public class PhimDetailActivity extends AppCompatActivity implements View.OnClic
                 if(LoginActivity.user == null){
                     startActivity(new Intent(getApplicationContext(), LoginActivity.class));
                 } else {
-                    Toast.makeText(getApplicationContext(), "Ngon", Toast.LENGTH_LONG).show();
-                    LoginActivity.user = null;
+                    startActivity(new Intent(getApplicationContext(), UserActivity.class));
                 }
+            }
+        });
+
+        txtBaiViet.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getApplicationContext(), BaiVietActivity.class));
             }
         });
 
         imgHome.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                startActivity(new Intent(getApplicationContext(), MainActivity.class));
             }
         });
 
         imgSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                startActivity(new Intent(getApplicationContext(), PhimActivity.class));
             }
         });
 
         imgPost.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                if(LoginActivity.user == null) {
+                    Toast.makeText(getApplicationContext(), "Bạn cần đăng nhập để đăng bài.",
+                            Toast.LENGTH_LONG).show();
+                    loginDialog.show();
+                } else {
+                    startActivity(new Intent(getApplicationContext(), DangBaiVietActivity.class));
+                }
             }
         });
 
+        loginDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                if(LoginActivity.user != null) {
+                    startActivity(new Intent(getApplicationContext(), DangBaiVietActivity.class));
+                }
+            }
+        });
     }
 
     @Override
     protected void onStart() {
         super.onStart();
+        loadData();
+        addToolbar();
+    }
+
+    private void loadData() {
         if(LoginActivity.user != null){
             Picasso.get()
                     .load(LoginActivity.user.getAvatar().toString())
                     .placeholder(android.R.drawable.ic_menu_report_image)
                     .error(android.R.drawable.ic_menu_report_image)
                     .into(imgLogin);
+            setBinhLuanOfUser(LoginActivity.user, phim.getId());
         }
         else {
             imgLogin.setImageResource(R.drawable.login);
+            edtBinhLuan.setText("");
+            btnGuiBinhLuan.setText("Gửi");
+            edtBinhLuan.setVisibility(View.VISIBLE);
+            imgStar1.setImageResource(R.drawable.darkstar);
+            imgStar2.setImageResource(R.drawable.darkstar);
+            imgStar3.setImageResource(R.drawable.darkstar);
+            imgStar4.setImageResource(R.drawable.darkstar);
+            imgStar5.setImageResource(R.drawable.darkstar);
+            imgStar6.setImageResource(R.drawable.darkstar);
+            imgStar7.setImageResource(R.drawable.darkstar);
+            imgStar8.setImageResource(R.drawable.darkstar);
+            imgStar9.setImageResource(R.drawable.darkstar);
+            imgStar10.setImageResource(R.drawable.darkstar);
         }
-
-        setBinhLuanOfUser(LoginActivity.user, phim.getId());
     }
 }
