@@ -1,5 +1,6 @@
 package com.example.phephim;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -7,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -17,12 +19,14 @@ import android.widget.Toast;
 import com.example.adapter.BinhLuanPhimAdapter;
 import com.example.model.BinhLuanPhim;
 import com.example.model.Phim;
+import com.example.model.User;
 import com.example.service.APIUtils;
 import com.example.service.DataClient;
 import com.example.util.LoginDialog;
 import com.example.util.MyListView;
 import com.squareup.picasso.Picasso;
 
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,12 +40,14 @@ public class PhimDetailActivity extends AppCompatActivity implements View.OnClic
     TextView txtDiem, txtTieuDe, txtNoiDung, txtTheLoai, txtDaoDien, txtDienVien, txtNgay, txtThoiLuong, txtNoComment;
     EditText edtBinhLuan;
     ProgressBar pbPhimDetail;
+    Button btnGuiBinhLuan, btnHuy, btnXoa;
 
     Spinner spinnerSapXep;
     MyListView lvBinhLuan;
     BinhLuanPhimAdapter adapterBL;
     Phim phim;
     int diemPhim = -1;
+    LoginDialog loginDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,6 +90,13 @@ public class PhimDetailActivity extends AppCompatActivity implements View.OnClic
         imgStar8 = findViewById(R.id.imgStar8);
         imgStar9 = findViewById(R.id.imgStar9);
         imgStar10 = findViewById(R.id.imgStar10);
+
+        btnGuiBinhLuan = findViewById(R.id.btnGuiBLDanhGiaPhim);
+        btnHuy = findViewById(R.id.btnHuyPD);
+        btnHuy.setVisibility(View.GONE);
+        btnXoa = findViewById(R.id.btnXoaPD);
+        btnXoa.setVisibility(View.GONE);
+        loginDialog = new LoginDialog(this);
     }
 
     private void setPhimData() {
@@ -159,11 +172,10 @@ public class PhimDetailActivity extends AppCompatActivity implements View.OnClic
         });
     }
 
-    public void guiBinhLuanPhim(View view) {
+    public void guiBinhLuanPhim() {
 
         if(LoginActivity.user == null) {
             Toast.makeText(getApplicationContext(), "Bạn cần đăng nhập để gửi đánh giá.", Toast.LENGTH_LONG).show();
-            LoginDialog loginDialog = new LoginDialog(this);
             loginDialog.show();
             return;
         }
@@ -191,7 +203,22 @@ public class PhimDetailActivity extends AppCompatActivity implements View.OnClic
                 public void onResponse(Call<String> call, Response<String> response) {
                     if (response.body().equals("Success")) {
                         spinnerSapXep.setSelection(1);
-                        edtBinhLuan.setText("");
+                        btnGuiBinhLuan.setText("   Sửa đánh giá   ");
+                        DataClient dataClient1 = APIUtils.getData();
+                        Call<List<Phim>> call1 = dataClient1.getPhimHot(phim.getTen());
+                        call1.enqueue(new Callback<List<Phim>>() {
+                            @Override
+                            public void onResponse(Call<List<Phim>> call, Response<List<Phim>> response) {
+                                phim = response.body().get(0);
+                                txtDiem.setText(phim.getDiem()+"");
+                            }
+
+                            @Override
+                            public void onFailure(Call<List<Phim>> call, Throwable t) {
+
+                            }
+                        });
+                        edtBinhLuan.setVisibility(View.GONE);
                         lvBinhLuan.requestFocus();
                     } else {
                         Toast.makeText(getApplicationContext(), "Đã có lỗi xãy ra!",
@@ -202,6 +229,152 @@ public class PhimDetailActivity extends AppCompatActivity implements View.OnClic
                 @Override
                 public void onFailure(Call<String> call, Throwable t) {
                     Log.e("QQQ", t.getMessage());
+                }
+            });
+        }
+    }
+
+    private void setBinhLuanOfUser(User user, String maPhim) {
+        if(user != null) {
+            DataClient dataClient = APIUtils.getData();
+            Call<List<BinhLuanPhim>> call = dataClient.getBinhLuanPhimOfUser(user.getEmail(), maPhim);
+            call.enqueue(new Callback<List<BinhLuanPhim>>() {
+                @Override
+                public void onResponse(Call<List<BinhLuanPhim>> call, Response<List<BinhLuanPhim>> response) {
+                    if(response.body().size() == 0) {
+                        return;
+                    }
+                    edtBinhLuan.setVisibility(View.GONE);
+                    edtBinhLuan.setText(response.body().get(0).getNoiDung());
+                    btnGuiBinhLuan.setText("   Sửa đánh giá   ");
+                    int diemDanhGia = response.body().get(0).getDiemPhim();
+                    switch (diemDanhGia) {
+                        case 1:
+                            imgStar1.setImageResource(R.drawable.yellowstart);
+                            imgStar2.setImageResource(R.drawable.darkstar);
+                            imgStar3.setImageResource(R.drawable.darkstar);
+                            imgStar4.setImageResource(R.drawable.darkstar);
+                            imgStar5.setImageResource(R.drawable.darkstar);
+                            imgStar6.setImageResource(R.drawable.darkstar);
+                            imgStar7.setImageResource(R.drawable.darkstar);
+                            imgStar8.setImageResource(R.drawable.darkstar);
+                            imgStar9.setImageResource(R.drawable.darkstar);
+                            imgStar10.setImageResource(R.drawable.darkstar);
+                            break;
+                        case 2:
+                            imgStar1.setImageResource(R.drawable.yellowstart);
+                            imgStar2.setImageResource(R.drawable.yellowstart);
+                            imgStar3.setImageResource(R.drawable.darkstar);
+                            imgStar4.setImageResource(R.drawable.darkstar);
+                            imgStar5.setImageResource(R.drawable.darkstar);
+                            imgStar6.setImageResource(R.drawable.darkstar);
+                            imgStar7.setImageResource(R.drawable.darkstar);
+                            imgStar8.setImageResource(R.drawable.darkstar);
+                            imgStar9.setImageResource(R.drawable.darkstar);
+                            imgStar10.setImageResource(R.drawable.darkstar);
+                            break;
+                        case 3:
+                            imgStar1.setImageResource(R.drawable.yellowstart);
+                            imgStar2.setImageResource(R.drawable.yellowstart);
+                            imgStar3.setImageResource(R.drawable.yellowstart);
+                            imgStar4.setImageResource(R.drawable.darkstar);
+                            imgStar5.setImageResource(R.drawable.darkstar);
+                            imgStar6.setImageResource(R.drawable.darkstar);
+                            imgStar7.setImageResource(R.drawable.darkstar);
+                            imgStar8.setImageResource(R.drawable.darkstar);
+                            imgStar9.setImageResource(R.drawable.darkstar);
+                            imgStar10.setImageResource(R.drawable.darkstar);
+                            break;
+                        case 4:
+                            imgStar1.setImageResource(R.drawable.yellowstart);
+                            imgStar2.setImageResource(R.drawable.yellowstart);
+                            imgStar3.setImageResource(R.drawable.yellowstart);
+                            imgStar4.setImageResource(R.drawable.yellowstart);
+                            imgStar5.setImageResource(R.drawable.darkstar);
+                            imgStar6.setImageResource(R.drawable.darkstar);
+                            imgStar7.setImageResource(R.drawable.darkstar);
+                            imgStar8.setImageResource(R.drawable.darkstar);
+                            imgStar9.setImageResource(R.drawable.darkstar);
+                            imgStar10.setImageResource(R.drawable.darkstar);
+                            break;
+                        case 5:
+                            imgStar1.setImageResource(R.drawable.yellowstart);
+                            imgStar2.setImageResource(R.drawable.yellowstart);
+                            imgStar3.setImageResource(R.drawable.yellowstart);
+                            imgStar4.setImageResource(R.drawable.yellowstart);
+                            imgStar5.setImageResource(R.drawable.yellowstart);
+                            imgStar6.setImageResource(R.drawable.darkstar);
+                            imgStar7.setImageResource(R.drawable.darkstar);
+                            imgStar8.setImageResource(R.drawable.darkstar);
+                            imgStar9.setImageResource(R.drawable.darkstar);
+                            imgStar10.setImageResource(R.drawable.darkstar);
+                            break;
+                        case 6:
+                            imgStar1.setImageResource(R.drawable.yellowstart);
+                            imgStar2.setImageResource(R.drawable.yellowstart);
+                            imgStar3.setImageResource(R.drawable.yellowstart);
+                            imgStar4.setImageResource(R.drawable.yellowstart);
+                            imgStar5.setImageResource(R.drawable.yellowstart);
+                            imgStar6.setImageResource(R.drawable.yellowstart);
+                            imgStar7.setImageResource(R.drawable.darkstar);
+                            imgStar8.setImageResource(R.drawable.darkstar);
+                            imgStar9.setImageResource(R.drawable.darkstar);
+                            imgStar10.setImageResource(R.drawable.darkstar);
+                            break;
+                        case 7:
+                            imgStar1.setImageResource(R.drawable.yellowstart);
+                            imgStar2.setImageResource(R.drawable.yellowstart);
+                            imgStar3.setImageResource(R.drawable.yellowstart);
+                            imgStar4.setImageResource(R.drawable.yellowstart);
+                            imgStar5.setImageResource(R.drawable.yellowstart);
+                            imgStar6.setImageResource(R.drawable.yellowstart);
+                            imgStar7.setImageResource(R.drawable.yellowstart);
+                            imgStar8.setImageResource(R.drawable.darkstar);
+                            imgStar9.setImageResource(R.drawable.darkstar);
+                            imgStar10.setImageResource(R.drawable.darkstar);
+                            break;
+                        case 8:
+                            imgStar1.setImageResource(R.drawable.yellowstart);
+                            imgStar2.setImageResource(R.drawable.yellowstart);
+                            imgStar3.setImageResource(R.drawable.yellowstart);
+                            imgStar4.setImageResource(R.drawable.yellowstart);
+                            imgStar5.setImageResource(R.drawable.yellowstart);
+                            imgStar6.setImageResource(R.drawable.yellowstart);
+                            imgStar7.setImageResource(R.drawable.yellowstart);
+                            imgStar8.setImageResource(R.drawable.yellowstart);
+                            imgStar9.setImageResource(R.drawable.darkstar);
+                            imgStar10.setImageResource(R.drawable.darkstar);
+                            break;
+                        case 9:
+                            imgStar1.setImageResource(R.drawable.yellowstart);
+                            imgStar2.setImageResource(R.drawable.yellowstart);
+                            imgStar3.setImageResource(R.drawable.yellowstart);
+                            imgStar4.setImageResource(R.drawable.yellowstart);
+                            imgStar5.setImageResource(R.drawable.yellowstart);
+                            imgStar6.setImageResource(R.drawable.yellowstart);
+                            imgStar7.setImageResource(R.drawable.yellowstart);
+                            imgStar8.setImageResource(R.drawable.yellowstart);
+                            imgStar9.setImageResource(R.drawable.yellowstart);
+                            imgStar10.setImageResource(R.drawable.darkstar);
+                            break;
+                        case 10:
+                            imgStar1.setImageResource(R.drawable.yellowstart);
+                            imgStar2.setImageResource(R.drawable.yellowstart);
+                            imgStar3.setImageResource(R.drawable.yellowstart);
+                            imgStar4.setImageResource(R.drawable.yellowstart);
+                            imgStar5.setImageResource(R.drawable.yellowstart);
+                            imgStar6.setImageResource(R.drawable.yellowstart);
+                            imgStar7.setImageResource(R.drawable.yellowstart);
+                            imgStar8.setImageResource(R.drawable.yellowstart);
+                            imgStar9.setImageResource(R.drawable.yellowstart);
+                            imgStar10.setImageResource(R.drawable.yellowstart);
+                            break;
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<List<BinhLuanPhim>> call, Throwable t) {
+                    Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_LONG).show();
                 }
             });
         }
@@ -218,6 +391,109 @@ public class PhimDetailActivity extends AppCompatActivity implements View.OnClic
         imgStar8.setOnClickListener(this);
         imgStar9.setOnClickListener(this);
         imgStar10.setOnClickListener(this);
+
+        btnGuiBinhLuan.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(btnGuiBinhLuan.getText().equals("Gửi")){
+                    guiBinhLuanPhim();
+                } else if(btnGuiBinhLuan.getText().equals("Lưu")){
+                    DataClient updateBinhLuan = APIUtils.getData();
+                    Call<String> callLuu =
+                            updateBinhLuan.updateBinhLuanPhimOfUser(
+                                    LoginActivity.user.getEmail(),
+                                    phim.getId(),
+                                    edtBinhLuan.getText().toString()
+                                    );
+                    callLuu.enqueue(new Callback<String>() {
+                        @Override
+                        public void onResponse(Call<String> call, Response<String> response) {
+                            if(response.body().equals("Success")){
+                                Toast.makeText(getApplicationContext(),"Cập nhật thành công!",
+                                        Toast.LENGTH_LONG).show();
+                                btnXoa.setVisibility(View.GONE);
+                                btnHuy.setVisibility(View.GONE);
+                                edtBinhLuan.setVisibility(View.GONE);
+                                btnGuiBinhLuan.setText("   Sửa đánh giá   ");
+                                setBinhLuanData(1);
+                            } else {
+                                Toast.makeText(getApplicationContext(), "Có lỗi xảy ra, không thể cập nhật!",
+                                        Toast.LENGTH_LONG).show();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<String> call, Throwable t) {
+
+                        }
+                    });
+                } else {
+                    edtBinhLuan.setVisibility(View.VISIBLE);
+                    btnHuy.setVisibility(View.VISIBLE);
+                    btnXoa.setVisibility(View.VISIBLE);
+                    btnGuiBinhLuan.setText("Lưu");
+                }
+            }
+        });
+
+        btnHuy.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                btnXoa.setVisibility(View.GONE);
+                btnHuy.setVisibility(View.GONE);
+                edtBinhLuan.setVisibility(View.GONE);
+                btnGuiBinhLuan.setText("   Sửa đánh giá   ");
+            }
+        });
+
+        btnXoa.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DataClient deleteBL = APIUtils.getData();
+                Call<String> callDeleteBL = deleteBL.deleteBinhLuanPhim(LoginActivity.user.getEmail(), phim.getId());
+                callDeleteBL.enqueue(new Callback<String>() {
+                    @Override
+                    public void onResponse(Call<String> call, Response<String> response) {
+                        if(response.body().equals("Success")){
+                            Toast.makeText(getApplicationContext(), "Xóa thành công",
+                                    Toast.LENGTH_LONG).show();
+                            btnXoa.setVisibility(View.GONE);
+                            btnHuy.setVisibility(View.GONE);
+                            edtBinhLuan.setText("");
+                            btnGuiBinhLuan.setText("Gửi");
+                            edtBinhLuan.setVisibility(View.VISIBLE);
+                            imgStar1.setImageResource(R.drawable.darkstar);
+                            imgStar2.setImageResource(R.drawable.darkstar);
+                            imgStar3.setImageResource(R.drawable.darkstar);
+                            imgStar4.setImageResource(R.drawable.darkstar);
+                            imgStar5.setImageResource(R.drawable.darkstar);
+                            imgStar6.setImageResource(R.drawable.darkstar);
+                            imgStar7.setImageResource(R.drawable.darkstar);
+                            imgStar8.setImageResource(R.drawable.darkstar);
+                            imgStar9.setImageResource(R.drawable.darkstar);
+                            imgStar10.setImageResource(R.drawable.darkstar);
+                            setBinhLuanData(0);
+                        }
+                        else {
+                            Toast.makeText(getApplicationContext(), "Xóa thất bại, Có lỗi xảy ra!",
+                                    Toast.LENGTH_LONG).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<String> call, Throwable t) {
+
+                    }
+                });
+            }
+        });
+
+        loginDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                loadData();
+            }
+        });
     }
 
     @Override
@@ -367,6 +643,7 @@ public class PhimDetailActivity extends AppCompatActivity implements View.OnClic
     public void addToolbar() {
         ImageView imgSearch, imgPost, imgHome;
         TextView txtPhim, txtBaiViet;
+        final LoginDialog loginDialog = new LoginDialog(PhimDetailActivity.this);
 
         txtPhim = findViewById(R.id.txtPhimToolbar);
         txtBaiViet = findViewById(R.id.txtBaiVetToolbar);
@@ -382,12 +659,15 @@ public class PhimDetailActivity extends AppCompatActivity implements View.OnClic
             }
         });
 
-        txtBaiViet.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
+        if(LoginActivity.user != null){
+            Picasso.get()
+                    .load(LoginActivity.user.getAvatar())
+                    .placeholder(android.R.drawable.ic_menu_report_image)
+                    .error(android.R.drawable.ic_menu_report_image)
+                    .into(imgLogin);
+        } else {
+            imgLogin.setImageResource(R.drawable.login);
+        }
 
         imgLogin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -395,47 +675,86 @@ public class PhimDetailActivity extends AppCompatActivity implements View.OnClic
                 if(LoginActivity.user == null){
                     startActivity(new Intent(getApplicationContext(), LoginActivity.class));
                 } else {
-                    Toast.makeText(getApplicationContext(), "Ngon", Toast.LENGTH_LONG).show();
-                    LoginActivity.user = null;
+                    startActivity(new Intent(getApplicationContext(), UserActivity.class));
                 }
+            }
+        });
+
+        txtBaiViet.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getApplicationContext(), BaiVietActivity.class));
             }
         });
 
         imgHome.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                startActivity(new Intent(getApplicationContext(), MainActivity.class));
             }
         });
 
         imgSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                startActivity(new Intent(getApplicationContext(), PhimActivity.class));
             }
         });
 
         imgPost.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                if(LoginActivity.user == null) {
+                    Toast.makeText(getApplicationContext(), "Bạn cần đăng nhập để đăng bài.",
+                            Toast.LENGTH_LONG).show();
+                    loginDialog.show();
+                } else {
+                    startActivity(new Intent(getApplicationContext(), DangBaiVietActivity.class));
+                }
             }
         });
 
+        loginDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                if(LoginActivity.user != null) {
+                    startActivity(new Intent(getApplicationContext(), DangBaiVietActivity.class));
+                }
+            }
+        });
     }
 
     @Override
     protected void onStart() {
         super.onStart();
+        loadData();
+        addToolbar();
+    }
+
+    private void loadData() {
         if(LoginActivity.user != null){
             Picasso.get()
                     .load(LoginActivity.user.getAvatar().toString())
                     .placeholder(android.R.drawable.ic_menu_report_image)
                     .error(android.R.drawable.ic_menu_report_image)
                     .into(imgLogin);
+            setBinhLuanOfUser(LoginActivity.user, phim.getId());
         }
         else {
             imgLogin.setImageResource(R.drawable.login);
+            edtBinhLuan.setText("");
+            btnGuiBinhLuan.setText("Gửi");
+            edtBinhLuan.setVisibility(View.VISIBLE);
+            imgStar1.setImageResource(R.drawable.darkstar);
+            imgStar2.setImageResource(R.drawable.darkstar);
+            imgStar3.setImageResource(R.drawable.darkstar);
+            imgStar4.setImageResource(R.drawable.darkstar);
+            imgStar5.setImageResource(R.drawable.darkstar);
+            imgStar6.setImageResource(R.drawable.darkstar);
+            imgStar7.setImageResource(R.drawable.darkstar);
+            imgStar8.setImageResource(R.drawable.darkstar);
+            imgStar9.setImageResource(R.drawable.darkstar);
+            imgStar10.setImageResource(R.drawable.darkstar);
         }
     }
 }

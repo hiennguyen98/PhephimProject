@@ -18,7 +18,7 @@ public class User implements Serializable {
     private String password;
     @SerializedName("Avatar")
     @Expose
-    private Object avatar;
+    private String avatar;
     @SerializedName("Status")
     @Expose
     private String status;
@@ -47,11 +47,11 @@ public class User implements Serializable {
         this.password = password;
     }
 
-    public Object getAvatar() {
+    public String getAvatar() {
         return avatar;
     }
 
-    public void setAvatar(Object avatar) {
+    public void setAvatar(String avatar) {
         this.avatar = avatar;
     }
 

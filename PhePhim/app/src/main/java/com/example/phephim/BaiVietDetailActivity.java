@@ -2,6 +2,7 @@ package com.example.phephim;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.icu.text.UnicodeSetSpanner;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -36,11 +37,12 @@ public class BaiVietDetailActivity extends AppCompatActivity {
     MyListView lvBinhLuan;
     BinhLuanBaiVietAdapter binhLuanAdapter;
     TextView txtTieuDe, txtTacGia, txtNgay, txtNoiDung, txtDiem, txtSoBinhLuan, txtNoComment;
-    ImageView imgTacGia, imgAnh, imgLogin;
+    ImageView imgTacGia, imgAnh, imgLogin, imgLuuBaiViet;
     EditText edtBinhLuan;
     Button btnTheLoai, btnGui;
     BaiViet baiViet;
     LoginDialog loginDialog;
+    boolean isLuuBV;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,8 +53,37 @@ public class BaiVietDetailActivity extends AppCompatActivity {
         setData();
         setupSpinner();
         setBinhLuan(0);
+        checkLuuBV();
         addToolbar();
         addEvent();
+    }
+
+    private void checkLuuBV() {
+        if(LoginActivity.user == null){
+            imgLuuBaiViet.setImageResource(R.drawable.bookmark);
+            return;
+        }
+        DataClient checkLuu = APIUtils.getData();
+        Call<String> callCheck = checkLuu.checkLuuBaiViet(baiViet.getId(), LoginActivity.user.getEmail());
+        callCheck.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                if(response.body().equals("1")){
+                    isLuuBV = true;
+                    imgLuuBaiViet.setImageResource(R.drawable.bookmarkchecke);
+                } else if (response.body().equals("0")){
+                    isLuuBV = false;
+                } else {
+                    Toast.makeText(getApplicationContext(), "Lỗi", Toast.LENGTH_LONG).show();
+                    imgLuuBaiViet.setImageResource(R.drawable.bookmark);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+
+            }
+        });
     }
 
     private void setBinhLuan(int sapXep) {
@@ -94,6 +125,7 @@ public class BaiVietDetailActivity extends AppCompatActivity {
 
         imgTacGia = findViewById(R.id.imgTacGiaBV);
         imgAnh = findViewById(R.id.imgAnhBV);
+        imgLuuBaiViet = findViewById(R.id.imgLuuBaiViet);
 
         txtNoComment = findViewById(R.id.txtNoCommentBV);
 
@@ -191,6 +223,7 @@ public class BaiVietDetailActivity extends AppCompatActivity {
     public void addToolbar() {
         ImageView imgSearch, imgPost, imgHome;
         TextView txtPhim, txtBaiViet;
+        final LoginDialog loginDialog = new LoginDialog(BaiVietDetailActivity.this);
 
         txtPhim = findViewById(R.id.txtPhimToolbar);
         txtBaiViet = findViewById(R.id.txtBaiVetToolbar);
@@ -206,12 +239,15 @@ public class BaiVietDetailActivity extends AppCompatActivity {
             }
         });
 
-        txtBaiViet.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
+        if(LoginActivity.user != null){
+            Picasso.get()
+                    .load(LoginActivity.user.getAvatar())
+                    .placeholder(android.R.drawable.ic_menu_report_image)
+                    .error(android.R.drawable.ic_menu_report_image)
+                    .into(imgLogin);
+        } else {
+            imgLogin.setImageResource(R.drawable.login);
+        }
 
         imgLogin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -219,33 +255,53 @@ public class BaiVietDetailActivity extends AppCompatActivity {
                 if(LoginActivity.user == null){
                     startActivity(new Intent(getApplicationContext(), LoginActivity.class));
                 } else {
-                    Toast.makeText(getApplicationContext(), "Ngon", Toast.LENGTH_LONG).show();
-                    LoginActivity.user = null;
+                    startActivity(new Intent(getApplicationContext(), UserActivity.class));
                 }
+            }
+        });
+
+        txtBaiViet.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getApplicationContext(), BaiVietActivity.class));
             }
         });
 
         imgHome.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                startActivity(new Intent(getApplicationContext(), MainActivity.class));
             }
         });
 
         imgSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                startActivity(new Intent(getApplicationContext(), PhimActivity.class));
             }
         });
 
         imgPost.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                if(LoginActivity.user == null) {
+                    Toast.makeText(getApplicationContext(), "Bạn cần đăng nhập để đăng bài.",
+                            Toast.LENGTH_LONG).show();
+                    loginDialog.show();
+                } else {
+                    startActivity(new Intent(getApplicationContext(), DangBaiVietActivity.class));
+                }
             }
         });
 
+        loginDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                if(LoginActivity.user != null) {
+                    startActivity(new Intent(getApplicationContext(), DangBaiVietActivity.class));
+                }
+            }
+        });
     }
 
     private void addEvent() {
@@ -264,20 +320,64 @@ public class BaiVietDetailActivity extends AppCompatActivity {
                 }
             }
         });
+
+        imgLuuBaiViet.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(LoginActivity.user == null){
+                    Toast.makeText(getApplicationContext(), "Bạn cần đăng nhập để lưu bài viết!",
+                            Toast.LENGTH_LONG).show();
+                    loginDialog.show();
+                    return;
+                }
+                if(!isLuuBV){
+                    DataClient luuBV = APIUtils.getData();
+                    Call<String> callLuuBV = luuBV.insertLuuBaiViet(baiViet.getId(), LoginActivity.user.getEmail());
+                    callLuuBV.enqueue(new Callback<String>() {
+                        @Override
+                        public void onResponse(Call<String> call, Response<String> response) {
+                            if(response.body().equals("Success")) {
+                                imgLuuBaiViet.setImageResource(R.drawable.bookmarkchecke);
+                                checkLuuBV();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<String> call, Throwable t) {
+
+                        }
+                    });
+                } else {
+                    DataClient delete = APIUtils.getData();
+                    Call<String> callDelete = delete.deleteLuuBaiViet(baiViet.getId(), LoginActivity.user.getEmail());
+                    callDelete.enqueue(new Callback<String>() {
+                        @Override
+                        public void onResponse(Call<String> call, Response<String> response) {
+                            if(response.body().equals("Success")){
+                                imgLuuBaiViet.setImageResource(R.drawable.bookmark);
+                                //checkLuuBV();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<String> call, Throwable t) {
+
+                        }
+                    });
+                }
+            }
+        });
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        if(LoginActivity.user != null){
-            Picasso.get()
-                    .load(LoginActivity.user.getAvatar().toString())
-                    .placeholder(android.R.drawable.ic_menu_report_image)
-                    .error(android.R.drawable.ic_menu_report_image)
-                    .into(imgLogin);
-        }
-        else {
-            imgLogin.setImageResource(R.drawable.login);
-        }
+        addControl();
+        setData();
+        setupSpinner();
+        setBinhLuan(0);
+        checkLuuBV();
+        addToolbar();
+        addEvent();
     }
 }

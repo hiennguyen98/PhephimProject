@@ -35,6 +35,18 @@ public class BaiViet implements Serializable {
     @Expose
     private String theLoai;
 
+    public BaiViet(String id, String tieuDe, String noiDung, String ngay, int diem, String anh, String tacGia, String avatar, String theLoai) {
+        this.id = id;
+        this.tieuDe = tieuDe;
+        this.noiDung = noiDung;
+        this.ngay = ngay;
+        this.diem = diem;
+        this.anh = anh;
+        this.tacGia = tacGia;
+        this.avatar = avatar;
+        this.theLoai = theLoai;
+    }
+
     public String getId() {
         return id;
     }

@@ -11,37 +11,34 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.adapter.BaiVietFragmentAdapter;
 import com.example.adapter.UserFragmentAdapter;
 import com.example.util.LoginDialog;
 import com.squareup.picasso.Picasso;
 
-public class BaiVietActivity extends AppCompatActivity {
-
-    ViewPager vpBaiViet;
-    TabLayout tlBaiViet;
+public class UserActivity extends AppCompatActivity {
+    ViewPager vpUser;
+    TabLayout tlUser;
     ImageView imgLogin;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_bai_viet);
-
+        setContentView(R.layout.activity_user);
         addControl();
         addToolbar();
     }
 
     private void addControl() {
-        vpBaiViet = findViewById(R.id.vpBaiViet);
-        vpBaiViet.setAdapter(new BaiVietFragmentAdapter(getSupportFragmentManager()));
-        tlBaiViet = findViewById(R.id.tlBaiViet);
-        tlBaiViet.setupWithViewPager(vpBaiViet);
+        vpUser = findViewById(R.id.vpUser);
+        vpUser.setAdapter(new UserFragmentAdapter(getSupportFragmentManager()));
+        tlUser = findViewById(R.id.tlUser);
+        tlUser.setupWithViewPager(vpUser);
     }
 
     public void addToolbar() {
         ImageView imgSearch, imgPost, imgHome;
         TextView txtPhim, txtBaiViet;
-        final LoginDialog loginDialog = new LoginDialog(BaiVietActivity.this);
+        final LoginDialog loginDialog = new LoginDialog(UserActivity.this);
 
         txtPhim = findViewById(R.id.txtPhimToolbar);
         txtBaiViet = findViewById(R.id.txtBaiVetToolbar);
@@ -70,11 +67,7 @@ public class BaiVietActivity extends AppCompatActivity {
         imgLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(LoginActivity.user == null){
-                    startActivity(new Intent(getApplicationContext(), LoginActivity.class));
-                } else {
-                    startActivity(new Intent(getApplicationContext(), UserActivity.class));
-                }
+
             }
         });
 
@@ -123,9 +116,9 @@ public class BaiVietActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        addControl();
+    protected void onStart() {
+        super.onStart();
         addToolbar();
+        addControl();
     }
 }
